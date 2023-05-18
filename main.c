@@ -2,8 +2,9 @@
  * cyan5   */
 
 #include <stdio.h>    // printf, scanf
+#include <stdlib.h>   // malloc
 #include <time.h>     // clock
-#include <windows.h>  // Sleep
+#include <unistd.h>   // sleep
 #include "func.h"
 
 int main(void){
@@ -33,7 +34,7 @@ int main(void){
 
     // 探索開始
     printf("search start!\n");
-    Sleep(500);
+    sleep(500);
     double clock_1 = clock();
     
     // キューを生成
@@ -213,10 +214,6 @@ int main(void){
     //         // call_tree
     //     }
     // }
-
-    int stop;
-    scanf("%d", &stop);
-
 
     return 0;
 }
