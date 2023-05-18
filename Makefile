@@ -12,7 +12,6 @@ cand.o: cand.c
 
 .PHONY: clean
 clean:
-	# del /s a.exe *.o
 	rm -rf ./a.out *.o
 	@echo clean completed.
 
