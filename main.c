@@ -9,7 +9,7 @@
 
 int main(void){
 
-    int i, j, k;              // ループインデックス
+    int i, j, k;                 // roop index
     // int flag_printeval;       // 評価値表示フラグ
     // int eat, bite;            // eat, bite
     // int set_answer[3];        // ゲームの答え
