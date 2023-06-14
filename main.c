@@ -34,7 +34,7 @@ int main(void){
 
     // 探索開始
     printf("search start!\n");
-    sleep(500);
+    sleep(1);
     double clock_1 = clock();
     
     // キューを生成
