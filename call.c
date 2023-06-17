@@ -23,13 +23,13 @@ int calc_idx(int cand[3], int call_hist[3], int type){
             }
         }else{
             if(cand[2] == call_hist[1]){        /* 031 */
-                if(type == NEU || type == MR){
+                if(type == NU || type == MR){
                     score = 3;
                 }else{
                     score = 4;
                 }
             }else if(cand[2] == call_hist[2]){  /* 032 */
-                if(type == NEU || type == MR){
+                if(type == NU || type == MR){
                     score = 1;
                 }else{
                     score = 5;
@@ -41,7 +41,7 @@ int calc_idx(int cand[3], int call_hist[3], int type){
     }else if(cand[0] == call_hist[1]){
         if(cand[1] == call_hist[0]){
             if(cand[2] == call_hist[2]){        /* 102 */
-                if(type == NEU || type == LR){
+                if(type == NU || type == LR){
                     score = 2;
                 }else{
                     score = 7;
@@ -57,13 +57,13 @@ int calc_idx(int cand[3], int call_hist[3], int type){
             }
         }else{
             if(cand[2] == call_hist[0]){        /* 130 */
-                if(type == NEU){
+                if(type == NU){
                     score = 10;
                 }else{
                     score = 11;
                 }
             }else if(cand[2] == call_hist[2]){  /* 132 */
-                if(type == NEU){
+                if(type == NU){
                     score = 3;
                 }else if(type == LR){
                     score = 4;
@@ -77,13 +77,13 @@ int calc_idx(int cand[3], int call_hist[3], int type){
     }else if(cand[0] == call_hist[2]){
         if(cand[1] == call_hist[0]){
             if(cand[2] == call_hist[1]){        /* 201 */
-                if(type == NEU){
+                if(type == NU){
                     score = 9;
                 }else{
                     score = 14;
                 }
             }else{                              /* 203 */
-                if(type == NEU || type == LM){
+                if(type == NU || type == LM){
                     score = 10;
                 }else if(type == MR){
                     score = 11;
@@ -93,7 +93,7 @@ int calc_idx(int cand[3], int call_hist[3], int type){
             }
         }else if(cand[1] == call_hist[1]){
             if(cand[2] == call_hist[0]){        /* 210 */
-                if(type == NEU || type == LM){
+                if(type == NU || type == LM){
                     score = 2;
                 }else if(type == MR){
                     score = 7;
@@ -101,7 +101,7 @@ int calc_idx(int cand[3], int call_hist[3], int type){
                     score = 16;
                 }
             }else{                              /* 213 */
-                if(type == NEU || type == LM){
+                if(type == NU || type == LM){
                     score = 3;
                 }else if(type == MR){
                     score = 12;
@@ -111,13 +111,13 @@ int calc_idx(int cand[3], int call_hist[3], int type){
             }
         }else{
             if(cand[2] == call_hist[0]){        /* 230 */
-                if(type == NEU || type == MR){
+                if(type == NU || type == MR){
                     score = 8;
                 }else{
                     score = 18;
                 }
             }else if(cand[2] == call_hist[1]){  /* 231 */
-                if(type == NEU || type == MR){
+                if(type == NU || type == MR){
                     score = 10;
                 }else if(type == LR){
                     score = 11;
@@ -125,7 +125,7 @@ int calc_idx(int cand[3], int call_hist[3], int type){
                     score = 19;
                 }
             }else{                              /* 234 */
-                if(type == NEU || type == MR){
+                if(type == NU || type == MR){
                     score = 13;
                 }else{
                     score = 20;
@@ -135,7 +135,7 @@ int calc_idx(int cand[3], int call_hist[3], int type){
     }else{
         if(cand[1] == call_hist[0]){
             if(cand[2] == call_hist[1]){        /* 301 */
-                if(type == NEU || type == LR){
+                if(type == NU || type == LR){
                     score = 10;
                 }else if(type == LM){
                     score = 11;
@@ -143,7 +143,7 @@ int calc_idx(int cand[3], int call_hist[3], int type){
                     score = 21;
                 }
             }else if(cand[2] == call_hist[2]){  /* 302 */
-                if(type == NEU || type == LR){
+                if(type == NU || type == LR){
                     score = 3;
                 }else if(type == LM){
                     score = 12;
@@ -151,7 +151,7 @@ int calc_idx(int cand[3], int call_hist[3], int type){
                     score = 22;
                 }
             }else{                              /* 304 */
-                if(type == NEU || type == LM){
+                if(type == NU || type == LM){
                     score = 13;
                 }else{
                     score = 23;
@@ -159,7 +159,7 @@ int calc_idx(int cand[3], int call_hist[3], int type){
             }
         }else if(cand[1] == call_hist[1]){
             if(cand[2] == call_hist[0]){        /* 310 */
-                if(type == NEU){
+                if(type == NU){
                     score = 3;
                 }else if(type == LM){
                     score = 4;
@@ -171,7 +171,7 @@ int calc_idx(int cand[3], int call_hist[3], int type){
                     score = 24;
                 }
             }else if(cand[2] == call_hist[2]){  /* 312 */
-                if(type == NEU || type == LR){
+                if(type == NU || type == LR){
                     score = 1;
                 }else if(type == LM){
                     score = 5;
@@ -179,7 +179,7 @@ int calc_idx(int cand[3], int call_hist[3], int type){
                     score = 25;
                 }
             }else{                              /* 314 */
-                if(type == NEU || type == LM){
+                if(type == NU || type == LM){
                     score = 6;
                 }else{
                     score = 26;
@@ -187,7 +187,7 @@ int calc_idx(int cand[3], int call_hist[3], int type){
             }
         }else if(cand[1] == call_hist[2]){
             if(cand[2] == call_hist[0]){        /* 320 */
-                if(type == NEU){
+                if(type == NU){
                     score = 10;
                 }else if(type == LM){
                     score = 19;
@@ -199,7 +199,7 @@ int calc_idx(int cand[3], int call_hist[3], int type){
                     score = 27;
                 }
             }else if(cand[2] == call_hist[1]){  /* 321 */
-                if(type == NEU || type == LR){
+                if(type == NU || type == LR){
                     score = 8;
                 }else if(type == LM){
                     score = 18;
@@ -207,7 +207,7 @@ int calc_idx(int cand[3], int call_hist[3], int type){
                     score = 28;
                 }
             }else{                              /* 324 */
-                if(type == NEU){
+                if(type == NU){
                     score = 13;
                 }else if(type == LM){
                     score = 20;
@@ -219,7 +219,7 @@ int calc_idx(int cand[3], int call_hist[3], int type){
             }
         }else{
             if(cand[2] == call_hist[0]){        /* 340 */
-                if(type == NEU){
+                if(type == NU){
                     score = 13;
                 }else if(type == LR){
                     score = 20;
@@ -229,7 +229,7 @@ int calc_idx(int cand[3], int call_hist[3], int type){
                     score = 30;
                 }
             }else if(cand[2] == call_hist[1]){  /* 341 */
-                if(type == NEU){
+                if(type == NU){
                     score = 13;
                 }else if(type == LM){
                     score = 30;
@@ -241,7 +241,7 @@ int calc_idx(int cand[3], int call_hist[3], int type){
                     score = 31;
                 }
             }else if(cand[2] == call_hist[2]){  /* 342 */
-                if(type == NEU || type == LR){
+                if(type == NU || type == LR){
                     score = 6;
                 }else if(type == MR){
                     score = 26;
@@ -259,14 +259,14 @@ int calc_idx(int cand[3], int call_hist[3], int type){
 int calc_type(int call[3], int call_hist[3], int type){
     /* 
      * callとcall_histからタイプを判別する。
-     * typeがDIVの時は関数そのものを呼び出さない。
+     * typeがDVの時は関数そのものを呼び出さない。
      * */
 
     int score;
     if(call[0] == call_hist[0]){
         if(call[1] == call_hist[1]){
             if(call[2] == call_hist[2]){        /* 012 */
-                score = NEU;
+                score = NU;
             }else{                              /* 013 */
                 score = LM;
             }
@@ -274,11 +274,11 @@ int calc_type(int call[3], int call_hist[3], int type){
             if(call[2] == call_hist[1]){        /* 021 */
                 score = MR;
             }else{                              /* 023 */
-                score = DIV;
+                score = DV;
             }
         }else{
             if(call[2] == call_hist[1]){        /* 031 */
-                score = DIV;
+                score = DV;
             }else if(call[2] == call_hist[2]){  /* 032 */
                 score = LR;
             }else{                              /* 034 */
@@ -294,53 +294,53 @@ int calc_type(int call[3], int call_hist[3], int type){
             }
         }else if(call[1] == call_hist[2]){
             if(call[2] == call_hist[0]){        /* 120 */
-                score = DIV;
+                score = DV;
             }else{                              /* 123 */
-                score = DIV;
+                score = DV;
             }
         }else{
             if(call[2] == call_hist[0]){        /* 130 */
-                score = DIV;
+                score = DV;
             }else if(call[2] == call_hist[2]){  /* 132 */
-                score = DIV;
+                score = DV;
             }else{                              /* 134 */
-                score = DIV;
+                score = DV;
             }
         }
     }else if(call[0] == call_hist[2]){
         if(call[1] == call_hist[0]){
             if(call[2] == call_hist[1]){        /* 201 */
-                score = DIV;
+                score = DV;
             }else{                              /* 203 */
-                score = DIV;
+                score = DV;
             }
         }else if(call[1] == call_hist[1]){
             if(call[2] == call_hist[0]){        /* 210 */
                 score = LR;
             }else{                              /* 213 */
-                score = DIV;
+                score = DV;
             }
         }else{
             if(call[2] == call_hist[0]){        /* 230 */
                 score = LR;
             }else if(call[2] == call_hist[1]){  /* 231 */
-                score = DIV;
+                score = DV;
             }else{                              /* 234 */
-                score = DIV;
+                score = DV;
             }
         }
     }else{
         if(call[1] == call_hist[0]){
             if(call[2] == call_hist[1]){        /* 301 */
-                score = DIV;
+                score = DV;
             }else if(call[2] == call_hist[2]){  /* 302 */
-                score = DIV;
+                score = DV;
             }else{                              /* 304 */
-                score = DIV;
+                score = DV;
             }
         }else if(call[1] == call_hist[1]){
             if(call[2] == call_hist[0]){        /* 310 */
-                score = DIV;
+                score = DV;
             }else if(call[2] == call_hist[2]){  /* 312 */
                 score = MR;
             }else{                              /* 314 */
@@ -348,48 +348,48 @@ int calc_type(int call[3], int call_hist[3], int type){
             }
         }else if(call[1] == call_hist[2]){
             if(call[2] == call_hist[0]){        /* 320 */
-                score = DIV;
+                score = DV;
             }else if(call[2] == call_hist[1]){  /* 321 */
                 score = MR;
             }else{                              /* 324 */
-                score = DIV;
+                score = DV;
             }
         }else{
             if(call[2] == call_hist[0]){        /* 340 */
-                score = DIV;
+                score = DV;
             }else if(call[2] == call_hist[1]){  /* 341 */
-                score = DIV;
+                score = DV;
             }else if(call[2] == call_hist[2]){  /* 342 */
                 score = LM;
             }else{                              /* 345 */
-                score = NEU;
+                score = NU;
             }
         }
     }
 
     if(type == score){
         return type;
-    }else if(type == NEU){
+    }else if(type == NU){
         return score;
-    }else if(score == NEU){
+    }else if(score == NU){
         return type;
-    }else if(score == DIV){
-        return DIV;
+    }else if(score == DV){
+        return DV;
     }else if(type == LM && score == LR){
-        return DIV;
+        return DV;
     }else if(type == LM && score == MR){
-        return DIV;
+        return DV;
     }else if(type == LR && score == LM){
-        return DIV;
+        return DV;
     }else if(type == LR && score == MR){
-        return DIV;
+        return DV;
     }else if(type == MR && score == LM){
-        return DIV;
+        return DV;
     }else if(type == MR && score == LR){
-        return DIV;
+        return DV;
     }else{
         printf("error case : type=%d, score=%d\n", type, score);
-        return DIV;
+        return DV;
     }
 }
 

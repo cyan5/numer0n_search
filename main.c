@@ -34,7 +34,7 @@ int main(void){
 
     // 探索開始
     printf("search start!\n");
-    sleep(1);
+    sleep(0.5);
     double clock_1 = clock();
     
     // キューを生成
@@ -61,7 +61,7 @@ int main(void){
         cand[2] = cand_oridin[i*3+2];
 
         // nodeを作成
-        new = node_create(call, cand, 0, NEU, call_hist);
+        new = node_create(call, cand, 0, NU, call_hist);
 
         // ノードに情報を追加
         node_setjudge(new);
@@ -183,7 +183,7 @@ int main(void){
     // }
 
     double clock_2 = clock();
-    printf("Processing time = %.4lf sec.\n", (clock_2-clock_1)/1000);
+    printf("Processing time = %.4lf sec.\n", (clock_2-clock_1)/1000000);
     
 
     // 入力

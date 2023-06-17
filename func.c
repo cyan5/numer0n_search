@@ -121,7 +121,7 @@ void node_settype(node *ptr){
     if(ptr->type){
         for(int i=0; i<ptr->depth; i++){
             ptr->type = calc_type(&ptr->call_hist[ptr->depth*3], &ptr->call_hist[i*3], ptr->type);
-            if(ptr->type == DIV){
+            if(ptr->type == DV){
                 break;
             }
         }

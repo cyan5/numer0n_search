@@ -12,7 +12,7 @@ cand.o: cand.c
 
 .PHONY: clean
 clean:
-	rm -rf ./a.out *.o
+	rm -rf ./a.out main.o func.o call.o cand.o
 	@echo clean completed.
 
 # depends header
