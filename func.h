@@ -6,7 +6,7 @@
 
 #include "symbol.h"
 
-extern int CAND_T[2160];
+// extern int CAND_T[2160];
 
 typedef struct node{
     int call[3];              /* 質問            */

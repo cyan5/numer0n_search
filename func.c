@@ -41,8 +41,9 @@ void stack_push(node **stack, node *ptr){
 
 node* stack_pop(node **stack){
 
-    if((*stack)->child == NULL){
+    if(*stack == NULL){
         fprintf(stderr, "stack underflow.\n");
+        exit(1);
     }
     node *ptr = *stack;
     *stack = ptr->child;
@@ -166,9 +167,6 @@ void node_setcall(node *ptr, int depth){
 
     int idx = 0;
     for(int i=0; i<SIZE; i++){
-        // idx_lst[0] = calc_idx(cand_oridin[i*3  ], ptr->call_hist, ptr->depth);
-        // idx_lst[1] = calc_idx(cand_oridin[i*3+1], ptr->call_hist, ptr->depth);
-        // idx_lst[2] = calc_idx(cand_oridin[i*3+2], ptr->call_hist, ptr->depth);
 
         flag_zero = 1;
         for(int j=0; j<=depth; j++){

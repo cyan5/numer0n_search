@@ -7,30 +7,14 @@
 #include <unistd.h>   // sleep
 #include "func.h"
 
+extern int CAND_T[2160];
+
 int main(void){
 
-    int i, j, k;                 // roop index
+    int i, j;                    // roop index
     // int flag_printeval;       // 評価値表示フラグ
     // int eat, bite;            // eat, bite
     // int set_answer[3];        // ゲームの答え
-
-    // 全候補を格納する配列を生成
-    int cand_oridin[SIZE*3];  // 全候補格納配列
-    int idx = 0;
-    for(i=0; i<USENUM; i++){
-        for(j=0; j<USENUM; j++){
-            if(i != j){
-                for(k=0; k<USENUM; k++){
-                    if(i != k && j != k){
-                        cand_oridin[idx*3  ] = i;
-                        cand_oridin[idx*3+1] = j;
-                        cand_oridin[idx*3+2] = k;
-                        idx++;
-                    }
-                }
-            }
-        }
-    }
 
     // 探索開始
     printf("search start!\n");
@@ -41,7 +25,7 @@ int main(void){
     que *queue = (que*)malloc(sizeof(que));
     queue_init(queue);
     /* スタックを生成 */
-    node *stack = NULL;
+    // node *stack = NULL;
 
     // ルートノードを生成
     node *new;
@@ -56,9 +40,9 @@ int main(void){
     // for(i=0; i<SIZE; i++){
 
         // 候補をSIZE個生成
-        cand[0] = cand_oridin[i*3  ];
-        cand[1] = cand_oridin[i*3+1];
-        cand[2] = cand_oridin[i*3+2];
+        cand[0] = CAND_T[i*3  ];
+        cand[1] = CAND_T[i*3+1];
+        cand[2] = CAND_T[i*3+2];
 
         // nodeを作成
         new = node_create(call, cand, 0, NU, call_hist);
@@ -66,12 +50,11 @@ int main(void){
         // ノードに情報を追加
         node_setjudge(new);
         node_setcall(new, 0);
-        // node_setcall(new, cand_oridin, 0);
-        node_setcand(new, SIZE, cand_oridin);
+        node_setcand(new, SIZE, CAND_T);
 
-        // ルートノードをキューにプッシュ
-        // queue_push(queue, new);
-        stack_push(&stack, new);
+        // ルートノードをスタックorキューにプッシュ
+        queue_push(queue, new);
+        // stack_push(&stack, new);
     }
 
     node *ptr;
@@ -85,12 +68,12 @@ int main(void){
     // }
 
     // 
-    // while(queue->head != NULL){
-    while(stack != NULL){
+    while(queue->head != NULL){
+    // while(stack != NULL){
 
         // キューからポップ
-        ptr = stack_pop(&stack);
-        // ptr = queue_pop(queue);
+        ptr = queue_pop(queue);
+        // ptr = stack_pop(&stack);
         node_print(ptr);
 
         // ノード判定
@@ -100,8 +83,7 @@ int main(void){
         }else if(ptr->cand_len == 2){
             ptr->score = 1.5;
             ptr->var = 0.25;
-        }else if(ptr->depth == 3){
-        // }else if(ptr->depth == 0){
+        }else if(ptr->depth == 2){
             ptr->score = -1;
         }else{
             // 子ノードをキューにプッシュ
@@ -124,11 +106,10 @@ int main(void){
                     node_settype(new);
                     node_setcand(new, ptr->cand_len, ptr->cand_lst);
                     node_setcall(new, ptr->depth);
-                    // node_setcall(new, cand_oridin, ptr->depth);
 
                     // ルートノードをキューにプッシュ
-                    // queue_push(queue, new);
-                    stack_push(&stack, new);
+                    queue_push(queue, new);
+                    // stack_push(&stack, new);
                 }
             }
         }
