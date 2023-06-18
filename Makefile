@@ -1,6 +1,6 @@
 .PHONY: all
-all: main.o func.o call.o cand.o
-	gcc -Wall -O2 main.o func.o call.o cand.o
+all: main.o func.o call.o cand.o debug.o
+	gcc -Wall -O2 main.o func.o call.o cand.o debug.o
 main.o: main.c
 	gcc -Wall -O2 -c -o main.o main.c
 func.o: func.c
@@ -9,10 +9,12 @@ call.o: call.c
 	gcc -Wall -O2 -c -o call.o call.c
 cand.o: cand.c
 	gcc -Wall -O2 -c -o cand.o cand.c
+debug.o: debug.c
+	gcc -Wall -O2 -c -o debug.o debug.c
 
 .PHONY: clean
 clean:
-	rm -rf ./a.out main.o func.o call.o cand.o
+	rm -rf ./a.out main.o func.o call.o cand.o debug.o
 	@echo clean completed.
 
 # depends header
@@ -21,3 +23,4 @@ clean:
 call.o: symbol.h call.h
 func.o: symbol.h func.h call.h
 main.o: symbol.h func.h
+debug.o: symbol.h

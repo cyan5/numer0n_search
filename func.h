@@ -6,8 +6,6 @@
 
 #include "symbol.h"
 
-// extern int CAND_T[2160];
-
 typedef struct node{
     int call[3];              /* 質問            */
     int cand[3];              /* 解答            */
@@ -69,7 +67,6 @@ void node_setjudge(node *ptr);                   /* ジャッジ */
 void node_settype(node *ptr);
 void node_setcand(node *ptr, int cand_len, int cand_lst[SIZE*3]);
 void node_setcall(node *ptr, int depth);  /* 質問候補 */
-// void node_setcall(node *ptr, int cand_oridin[SIZE*3], int depth);  /* 質問候補 */
 
 // void queue_restore(que *queue);          /* キューに補充 */
 

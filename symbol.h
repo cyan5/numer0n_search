@@ -9,8 +9,6 @@
 #define SIZE 720   // 初期の候補数 C(USENUM, DI)
 #define HIST 10    // 質問記録数
 
-extern int CAND_T[2160];
-
 enum type {
     DV,   /* 全てを区別する。notを返す */
     NU,   /* 全て区別しない            */
@@ -31,10 +29,11 @@ enum judge {
     J0_0
 };
 
-// #if DI == 1
-//     int CAND_O[SIZE] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-// #if DI == 3
+/* デバッグ用関数 */
+/* プログラムを一時停止する */
+void stop(void);
 
-// int CAND_O[SIZE];
+/* checkを出力する */
+void check(void);
 
 #endif

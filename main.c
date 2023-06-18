@@ -180,9 +180,9 @@ int main(void){
     //     printf("--< Game %d >--\n", i+1);
 
     //     // ゲームiで使用する答え
-    //     set_answer[0] = cand_oridin[i][0];
-    //     set_answer[1] = cand_oridin[i][1];
-    //     set_answer[2] = cand_oridin[i][2];
+    //     set_answer[0] = CAND_T[i][0];
+    //     set_answer[1] = CAND_T[i][1];
+    //     set_answer[2] = CAND_T[i][2];
 
     //     // 3 EAT するまでループ
     //     // while(1){
