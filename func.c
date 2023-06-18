@@ -159,7 +159,6 @@ void node_setcand(node *ptr, int cand_len, int cand_lst[SIZE*3]){
 }
 
 void node_setcall(node *ptr, int depth){
-// void node_setcall(node *ptr, int cand_oridin[SIZE*3], int depth){
 
     hash *h_lst = NULL;
     int idx_lst[HIST];
@@ -171,7 +170,6 @@ void node_setcall(node *ptr, int depth){
         flag_zero = 1;
         for(int j=0; j<=depth; j++){
             idx_lst[j] = calc_idx(&CAND_T[i*3], &ptr->call_hist[j*3], ptr->type);
-            // idx_lst[j] = calc_idx(&cand_oridin[i*3], &ptr->call_hist[j*3], ptr->type);
             if(idx_lst[j] == 0){
                 flag_zero = 0;
                 break;
@@ -183,9 +181,6 @@ void node_setcall(node *ptr, int depth){
             ptr->call_lst[idx*3  ] = CAND_T[i*3  ];
             ptr->call_lst[idx*3+1] = CAND_T[i*3+1];
             ptr->call_lst[idx*3+2] = CAND_T[i*3+2];
-            // ptr->call_lst[idx*3  ] = cand_oridin[i*3  ];
-            // ptr->call_lst[idx*3+1] = cand_oridin[i*3+1];
-            // ptr->call_lst[idx*3+2] = cand_oridin[i*3+2];
             idx++;
         }
     }
