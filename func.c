@@ -6,49 +6,62 @@
 #include "func.h"
 #include "call.h"
 
-void queue_init(que *queue){
-    queue->len = 0;
-    queue->head = NULL;
-    queue->tail = NULL;
-}
+// void queue_init(que *queue){
+//     queue->len = 0;
+//     queue->head = NULL;
+//     queue->tail = NULL;
+// }
 
-void queue_push(que *queue, node *ptr){
-    queue->len++;
-    if(queue->head == NULL){
-        queue->head = ptr;
+/////////////
+void node_push(node* ptr, node2* child){
+
+    if(ptr->head == NULL){
+        ptr->head = child;
     }else{
-        queue->tail->child = ptr;
+        ptr->tail->next = child;
     }
-    queue->tail = ptr;
+    ptr->tail = child;
 }
 
-node* queue_pop(que *queue){
-    node *ptr = queue->head;
-    if(ptr == NULL){
-        fprintf(stderr, "queue underflow.\n");
-        exit(1);
-    }
-    queue->head = ptr->child;
-    queue->len--;
-    return ptr;
-}
+/////////////
 
-void stack_push(node **stack, node *ptr){
+// void queue_push(que *queue, node *ptr){
+//     queue->len++;
+//     if(queue->head == NULL){
+//         queue->head = ptr;
+//     }else{
+//         queue->tail->child = ptr;
+//     }
+//     queue->tail = ptr;
+// }
 
-    ptr->child = *stack;
-    *stack = ptr;
-}
+// node* queue_pop(que *queue){
+//     node *ptr = queue->head;
+//     if(ptr == NULL){
+//         fprintf(stderr, "queue underflow.\n");
+//         exit(1);
+//     }
+//     queue->head = ptr->child;
+//     queue->len--;
+//     return ptr;
+// }
 
-node* stack_pop(node **stack){
+// void stack_push(node **stack, node *ptr){
 
-    if(*stack == NULL){
-        fprintf(stderr, "stack underflow.\n");
-        exit(1);
-    }
-    node *ptr = *stack;
-    *stack = ptr->child;
-    return ptr;
-}
+//     ptr->child = *stack;
+//     *stack = ptr;
+// }
+
+// node* stack_pop(node **stack){
+
+//     if(*stack == NULL){
+//         fprintf(stderr, "stack underflow.\n");
+//         exit(1);
+//     }
+//     node *ptr = *stack;
+//     *stack = ptr->child;
+//     return ptr;
+// }
 
 node* node_create(int call[3], int cand[3], int depth, int type, int call_hist[HIST*3]){
 
@@ -96,9 +109,9 @@ node* node_create(int call[3], int cand[3], int depth, int type, int call_hist[H
     ptr->var = -1;
 
     // struct node *next_row, *next_col, *child
-    ptr->next_row = NULL;
-    ptr->next_col = NULL;
-    ptr->child = NULL;
+    // ptr->next_row = NULL;
+    // ptr->next_col = NULL;
+    // ptr->child = NULL;
 
     return ptr;
 }

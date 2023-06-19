@@ -11,11 +11,6 @@ extern int CAND_T[2160];
 
 int main(void){
 
-    int i, j;                    // roop index
-    // int flag_printeval;       // 評価値表示フラグ
-    // int eat, bite;            // eat, bite
-    // int set_answer[3];        // ゲームの答え
-
     // 探索開始
     printf("search start!\n");
     sleep(0.5);
@@ -36,6 +31,7 @@ int main(void){
         call_hist[i] = -1;
     }
 
+    #if 0
     for(i=0; i<2; i++){
     // for(i=0; i<SIZE; i++){
 
@@ -56,6 +52,61 @@ int main(void){
         queue_push(queue, new);
         // stack_push(&stack, new);
     }
+    #endif
+
+    // //    候補をSIZE個生成
+    // cand[0] = CAND_T[i*3  ];
+    // cand[1] = CAND_T[i*3+1];
+    // cand[2] = CAND_T[i*3+2];
+
+    // nodeを作成
+    new = node_create(call, cand, 0, NU, call_hist);
+
+    // ノードに情報を追加
+    
+    
+    /*
+    node_setjudge(new);                // eat, bite
+    node_setcall(new, 0);              // 
+    node_setcand(new, SIZE, CAND_T);   // 
+
+    node_print(new);
+    */
+    
+    for(i=0; i<new->cand_len; i++){
+
+        node2 *child = (node2*)malloc(sizeof(node2));
+        node_push(new, child);
+    }
+
+    
+    /*
+    new = node_create();
+
+    queue_push(que, new);
+
+    while(queue->head != NULL){
+
+        ptr = queue_pop()
+
+        for(i=0; i<ptr->cand_len; i++){
+
+        }
+        queue_push(que, new);
+    }
+    
+    
+    
+    */
+
+    // for(i=0; i<SIZE; i++){
+
+        
+    // }
+
+    // ルートノードをスタックorキューにプッシュ
+    // queue_push(queue, new);
+    // stack_push(&stack, new);
 
     node *ptr;
 
@@ -68,7 +119,9 @@ int main(void){
     // }
 
     // 
-    while(queue->head != NULL){
+    #if 0
+    while(0){
+    // while(queue->head != NULL){
     // while(stack != NULL){
 
         // キューからポップ
@@ -119,6 +172,8 @@ int main(void){
     }
 
     free(queue);
+
+    #endif
 
 
 

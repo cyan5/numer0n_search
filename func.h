@@ -6,37 +6,50 @@
 
 #include "symbol.h"
 
-typedef struct node{
-    int call[3];              /* 質問            */
-    int cand[3];              /* 解答            */
-    int eat;                  /* eat             */
-    int bite;                 /* bite            */
-    int depth;                /* 質問の回数      */
-    int type;                 /* 候補タイプ      */
-    int call_hist[HIST*3];    /* 質問履歴        */
-    int call_len;             /* 質問候補長さ    */
-    int call_lst[SIZE*3];     /* 質問候補リスト  */
-    int cand_len;             /* 解答候補長さ    */
-    int cand_lst[SIZE*3];     /* 解答候補リスト  */
-    double score;             /* 評価値          */
-    double var;               /* 評価値の分散    */
-    struct node *next_row;    /*                 */
-    struct node *next_col;    /*                 */
-    struct node *child;       /*                 */
-}node;
+// typedef struct node{
+//     int depth;                /* 質問の回数      */
+//     int call_hist[HIST*3];    /* 質問履歴        */
+//     int call[3];              /* 質問            */
+//     int type;                 /* 候補タイプ      */
+//     int cand[3];              /* 解答            */
+//     int eat;                  /* eat             */
+//     int bite;                 /* bite            */
+//     int call_len;             /* 質問候補長さ    */
+//     int call_lst[SIZE*3];     /* 質問候補リスト  */
+//     int cand_len;             /* 解答候補長さ    */
+//     int cand_lst[SIZE*3];     /* 解答候補リスト  */
+//     double score;             /* 評価値          */
+//     double var;               /* 評価値の分散    */
+//     struct node *next;
+//     struct node2 *head; /*                 */
+//     struct node2 *tail; /*                 */
+// }node;
 /* node型はツリー構造を想定しているが単方向リストとしても使える。
  * 単方向リストはque関数を用いて制御する。
  * ツリーは？
  * */
 
-typedef struct que{
-    int len;
-    node *head;
-    node *tail;
-}que;
-/* node型を単方向リストとして制御するための構造体
- * ポップすることはないのでまとめてclearする
- * */
+
+// typedef struct node2{
+//     int judge;             /*  */
+//     int judge_hist[HIST];  /*  */
+//     double score;          /*  */
+//     double var;            /*  */
+//     struct node2 *next;    /*  */
+//     struct node *head;     /*  */
+//     struct node *tail;     /*  */
+// }node2;
+
+void node_push(node* ptr, node2* child);
+
+// typedef struct que{
+//     int len;
+//     node *head;
+//     node *tail;
+// }que;
+// /* node型を単方向リストとして制御するための構造体
+//  * ポップすることはないのでまとめてclearする
+//  * */
 
 /* ノードをキューにする関数群 */
 void queue_init(que *queue);
