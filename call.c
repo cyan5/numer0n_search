@@ -256,7 +256,7 @@ int calc_idx(int cand[3], int call_hist[3], int type){
     return score;
 }
 
-int calc_type(int call[3], int call_hist[3], int type){
+int calc_type(int call[3], int call_hist[3], int parent_type){
     /* 
      * callとcall_histからタイプを判別する。
      * typeがDVの時は関数そのものを呼び出さない。
@@ -367,35 +367,35 @@ int calc_type(int call[3], int call_hist[3], int type){
         }
     }
 
-    if(type == score){
-        return type;
-    }else if(type == NU){
+    if(parent_type == score){
+        return parent_type;
+    }else if(parent_type == NU){
         return score;
     }else if(score == NU){
-        return type;
+        return parent_type;
     }else if(score == DV){
         return DV;
-    }else if(type == LM && score == LR){
+    }else if(parent_type == LM && score == LR){
         return DV;
-    }else if(type == LM && score == MR){
+    }else if(parent_type == LM && score == MR){
         return DV;
-    }else if(type == LR && score == LM){
+    }else if(parent_type == LR && score == LM){
         return DV;
-    }else if(type == LR && score == MR){
+    }else if(parent_type == LR && score == MR){
         return DV;
-    }else if(type == MR && score == LM){
+    }else if(parent_type == MR && score == LM){
         return DV;
-    }else if(type == MR && score == LR){
+    }else if(parent_type == MR && score == LR){
         return DV;
     }else{
-        printf("error case : type=%d, score=%d\n", type, score);
+        printf("error case : type=%d, score=%d\n", parent_type, score);
         return DV;
     }
 }
 
 int hash_search(hash *ptr, int data[HIST], int depth){
     /* 
-     * tmpがNULLまで走査したらscpre = 1
+     * tmpがNULLまで走査したらscore = 1
      * 途中で値が見つかったらscore = 0 を代入してbreakする。
      * */
 

@@ -18,7 +18,7 @@ que* queue_init(void){
     return new;
 }
 
-void queue_push(que *queue, node *ptr){
+void queue_push(que *queue, node_t *ptr){
 
     if(queue->head == NULL){
         queue->head = ptr;
@@ -28,14 +28,14 @@ void queue_push(que *queue, node *ptr){
     queue->tail = ptr;
 }
 
-node* queue_pop(que *queue){
+node_t* queue_pop(que *queue){
 
     if(queue->head == NULL){
         fprintf(stderr, "queue underflow.\n");
         exit(1);
     }
 
-    node *ptr = queue->head;
+    node_t *ptr = queue->head;
 
     queue->head = ptr->next;
     if(ptr->next == NULL){
@@ -58,29 +58,28 @@ stk* stack_init(void){
         fprintf(stderr, "memoly allocation error.\n");
         exit(1);
     }
-    new->tail == NULL;
     return new;
 }
 
-void stack_push(stk *stack, node *ptr){
+void stack_push(stk *stack, node_t *ptr){
 
-    ptr->next = stack;
-    *stack = ptr;
+    ptr->next = stack->tail;
+    stack->tail = ptr;
 }
 
-node* stack_pop(stk *stack){
+node_t* stack_pop(stk *stack){
 
     if(stack->tail == NULL){
         fprintf(stderr, "stack underflow.\n");
         exit(1);
     }
     
-    node *ptr = stack->tail;
+    node_t *ptr = stack->tail;
     stack->tail = ptr->next;
 
     return ptr;
 }
 
-void stack_clear(stl *stack){
+void stack_clear(stk *stack){
     free(stack);
 }

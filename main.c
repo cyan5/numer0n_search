@@ -5,9 +5,10 @@
 #include <stdlib.h>   // malloc
 #include <time.h>     // clock
 #include <unistd.h>   // sleep
+#include "data.h"
 #include "func.h"
 
-extern int CAND_T[2160];
+extern int CAND_T[SIZE*DI];
 
 int main(void){
 
@@ -15,54 +16,60 @@ int main(void){
     printf("search start!\n");
     sleep(0.5);
     double clock_1 = clock();
-    
-    // キューを生成
-    que *queue = (que*)malloc(sizeof(que));
-    queue_init(queue);
-    /* スタックを生成 */
-    // node *stack = NULL;
+
+    // スタックorキューを生成
+    que *queue = queue_init();
+    // stk *stack = stack_init(void);
 
     // ルートノードを生成
-    node *new;
-    int call[3] = {0, 1, 2};
-    int cand[3];
-    int call_hist[HIST*3];
-    for(i=0; i<HIST; i+=3){
-        call_hist[i] = -1;
+    int call[DI];
+    for(int i=0; i<DI; i++){
+        call[i] = i;
+    }
+    int call_hist[HIST*DI];
+    node_t *new;
+    new = node_create(
+        0,           // depth
+        call,        // call
+        call_hist,   // call_hist
+        NU,          // parent type
+        SIZE,        // cand_len
+        CAND_T);     // cand_lst
+
+    // ルートをキューにプッシュ
+    queue_push(queue, new);
+
+    // 探索
+    int node_idx;
+    node_t *node_ptr;
+    judge_t *judge_ptr;
+    while(queue->head != NULL){
+
+        node_ptr = queue_pop(queue);
+
+        node_idx = 0;
+        judge_ptr = node_ptr->head;
+        while(judge_ptr != NULL){
+
+            new = node_create(
+                node_ptr->depth+1, 
+                &node_ptr->call_lst[node_idx*DI], 
+                node_ptr->call_hist, 
+                node_ptr->type, 
+                judge_ptr->cand_len, 
+                judge_ptr->cand_lst);
+            judge_push(judge_ptr, new);
+            queue_push(queue, new);
+
+            node_idx++;
+            judge_ptr = judge_ptr->next;
+        }
     }
 
-    #if 0
-    for(i=0; i<2; i++){
-    // for(i=0; i<SIZE; i++){
 
-        // 候補をSIZE個生成
-        cand[0] = CAND_T[i*3  ];
-        cand[1] = CAND_T[i*3+1];
-        cand[2] = CAND_T[i*3+2];
 
-        // nodeを作成
-        new = node_create(call, cand, 0, NU, call_hist);
-
-        // ノードに情報を追加
-        node_setjudge(new);
-        node_setcall(new, 0);
-        node_setcand(new, SIZE, CAND_T);
-
-        // ルートノードをスタックorキューにプッシュ
-        queue_push(queue, new);
-        // stack_push(&stack, new);
-    }
-    #endif
-
-    // //    候補をSIZE個生成
-    // cand[0] = CAND_T[i*3  ];
-    // cand[1] = CAND_T[i*3+1];
-    // cand[2] = CAND_T[i*3+2];
-
-    // nodeを作成
-    new = node_create(call, cand, 0, NU, call_hist);
-
-    // ノードに情報を追加
+    // ノードに質問とジャッジを追加
+    
     
     
     /*
@@ -73,11 +80,6 @@ int main(void){
     node_print(new);
     */
     
-    for(i=0; i<new->cand_len; i++){
-
-        node2 *child = (node2*)malloc(sizeof(node2));
-        node_push(new, child);
-    }
 
     
     /*
@@ -108,7 +110,6 @@ int main(void){
     // queue_push(queue, new);
     // stack_push(&stack, new);
 
-    node *ptr;
 
     // check function
     // while(queue->head != NULL){

@@ -6,8 +6,6 @@
 
 #include "symbol.h"
 
-extern int CAND_T[2160];
-
 typedef struct hash{
     int data[HIST];
     struct hash *next;
@@ -16,17 +14,17 @@ typedef struct hash{
  * リストは全て等しい場合のみ、同一の質問候補として扱われる
  * */
 
-// int calc_idx(int cand_oridin, int call_hist[HIST*3], int depth);
+// int calc_idx(int call_hist[HIST*3], int depth);
 int calc_idx(int cand[3], int call_hist[3], int type);
 /* 質問履歴から、次の質問候補をハッシュ値で返す
  * 012→013  hash:1  012→014  hash:2  ...  012→345  hash:34 */
 
 // int int_pow(int n, int x);
 
-int calc_type(int call[3], int call_hist[3], int type);
+int calc_type(int call[3], int call_hist[3], int parent_type);
 /* 受け取った質問と質問履歴から、タイプを更新する。
    012→013 : type 0→1  
- * type(ポインタ)を受け取り、値を更新する */
+ * parent_typeを受け取り、値を更新する */
 
 // int hash_search(hash *ptr, int data[3]);
 int hash_search(hash *ptr, int data[HIST], int depth);

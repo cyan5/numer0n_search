@@ -6,172 +6,147 @@
 #include "func.h"
 #include "call.h"
 
-// void queue_init(que *queue){
-//     queue->len = 0;
-//     queue->head = NULL;
-//     queue->tail = NULL;
-// }
+extern int CAND_T[SIZE*DI];
 
-/////////////
-void node_push(node* ptr, node2* child){
-
-    if(ptr->head == NULL){
-        ptr->head = child;
-    }else{
-        ptr->tail->next = child;
-    }
-    ptr->tail = child;
-}
-
-/////////////
-
-// void queue_push(que *queue, node *ptr){
-//     queue->len++;
-//     if(queue->head == NULL){
-//         queue->head = ptr;
-//     }else{
-//         queue->tail->child = ptr;
+// void node_print(node_t *ptr){
+//     printf("call[3] \t= %d%d%d\tcand[3] = %d%d%d\n", 
+//         ptr->call[0], ptr->call[1], ptr->call[2], 
+//         ptr->cand[0], ptr->cand[1], ptr->cand[2]);
+//     printf("eat bite \t= %d-%d\n", ptr->eat, ptr->bite);
+//     printf("depth   \t= %d\n", ptr->depth);
+//     printf("call_hist[%d] \t= [", ptr->depth+1);
+//     for(int i=0; i<=ptr->depth; i++){
+//         printf("%d%d%d", ptr->call_hist[i*3], ptr->call_hist[i*3+1], ptr->call_hist[i*3+2]);
+//         if(i != ptr->depth){printf(" ");}
 //     }
-//     queue->tail = ptr;
-// }
-
-// node* queue_pop(que *queue){
-//     node *ptr = queue->head;
-//     if(ptr == NULL){
-//         fprintf(stderr, "queue underflow.\n");
-//         exit(1);
+//     printf("]\n");
+//     printf("cand_lst[%d] \t= [", ptr->cand_len);
+//     for(int i=0; i<ptr->cand_len; i++){
+//         printf("%d%d%d", ptr->cand_lst[i*3], ptr->cand_lst[i*3+1], ptr->cand_lst[i*3+2]);
+//         if(i >= 20){
+//             printf(" ... ");
+//             break;
+//         }else if(i != ptr->cand_len-1){
+//             printf(" ");
+//         }
 //     }
-//     queue->head = ptr->child;
-//     queue->len--;
-//     return ptr;
-// }
-
-// void stack_push(node **stack, node *ptr){
-
-//     ptr->child = *stack;
-//     *stack = ptr;
-// }
-
-// node* stack_pop(node **stack){
-
-//     if(*stack == NULL){
-//         fprintf(stderr, "stack underflow.\n");
-//         exit(1);
+//     printf("]\n");
+//     printf("call_lst[%d] \t= [", ptr->call_len);
+//     for(int i=0; i<ptr->call_len; i++){
+//         printf("%d%d%d", ptr->call_lst[i*3], ptr->call_lst[i*3+1], ptr->call_lst[i*3+2]);
+//         if(i >= 20){
+//             printf(" ... ");
+//             break;
+//         }else if(i != ptr->call_len-1){
+//             printf(" ");
+//         }
 //     }
-//     node *ptr = *stack;
-//     *stack = ptr->child;
-//     return ptr;
+//     printf("]\n");
+//     printf("score   \t= %lf\n", ptr->score);
+//     printf("var     \t= %lf\n", ptr->var);
+//     printf("\n");
 // }
 
-node* node_create(int call[3], int cand[3], int depth, int type, int call_hist[HIST*3]){
+node_t* node_create(
+    int depth, 
+    int call[DI], 
+    int call_hist[HIST*DI], 
+    int parent_type, 
+    int cand_len, 
+    int cand_lst[SIZE*DI]){
 
     // メモリの動的確保
-    node *ptr = (node*)malloc(sizeof(node));
-
-    // int call[3]
-    ptr->call[0] = call[0];
-    ptr->call[1] = call[1];
-    ptr->call[2] = call[2];
-
-    // int cand[3]
-    ptr->cand[0] = cand[0];
-    ptr->cand[1] = cand[1];
-    ptr->cand[2] = cand[2];
-
-    // eat bite
-
-    // int depth
-    ptr->depth = depth;
-
-    // int type
-    ptr->type = type;
-
-    // int call_hist[HIST*3]
-    for(int i=0; i<HIST; i++){
-        if(i < depth){
-            ptr->call_hist[i*3  ] = call_hist[i*3  ];
-            ptr->call_hist[i*3+1] = call_hist[i*3+1];
-            ptr->call_hist[i*3+2] = call_hist[i*3+2];
-        }else if(i == depth){
-            ptr->call_hist[i*3  ] = call[0];
-            ptr->call_hist[i*3+1] = call[1];
-            ptr->call_hist[i*3+2] = call[2];
-        }else{
-            ptr->call_hist[i*3] = -1;
-        }
+    node_t *ptr = (node_t*)malloc(sizeof(node_t));
+    if(ptr == NULL){
+        fprintf(stderr, "memory allocation error.\n");
+        exit(1);
     }
 
-    // set call_len and call_lst
-    // node_setcall(ptr, cand_oridin);
+    // 引数データの格納
+    ptr->depth = depth;
+    for(int i=0; i<depth*DI; i++){
+        ptr->call_hist[i] = call_hist[i];
+    }
+    for(int i=0; i<DI; i++){
+        call_hist[depth*DI+i] = call[i];
+    }
+    ptr->type = node_settype(call, depth, call_hist, parent_type);
+    ptr->cand_len = cand_len;
+    for(int i=0; i<cand_len*DI; i++){
+        ptr->cand_lst[i] = cand_lst[i];
+    }
 
-    // double score, var
+    // 固定データの格納
     ptr->score = -1;
     ptr->var = -1;
+    ptr->next = NULL;
+    ptr->judge_len = 0;
+    ptr->head = NULL;
+    ptr->tail = NULL;
 
-    // struct node *next_row, *next_col, *child
-    // ptr->next_row = NULL;
-    // ptr->next_col = NULL;
-    // ptr->child = NULL;
+    // 次の質問候補リストを作成
+    node_setcall(ptr);
+
+    // ジャッジリストを作成
+    int judge, flag = 1;
+    judge_t *tmp = ptr->head, *new;
+
+    // ジャッジが既に存在するか探索
+    for(int i=0; i<ptr->cand_len; i++){
+
+        judge = node_setjudge(call, &cand_lst[i]);
+
+        while(tmp != NULL){
+
+            // 見つかったとき
+            if(tmp->judge == judge){
+                flag = 0;
+                for(int j=0; j<DI; j++){
+                    tmp->cand_lst[tmp->cand_len*DI+j] = cand_lst[i+j];
+                }
+                break;
+            }else{
+                tmp = tmp->next;
+            }
+        }
+
+        // 見つからなかったとき
+        if(flag){
+            ptr->judge_len++;
+            new = judge_create(judge);
+            node_push(ptr, new);
+        }
+    }
 
     return ptr;
 }
 
-void node_setjudge(node *ptr){
-    int eat = 0, bite = 0;
-    if(ptr->call[0] == ptr->cand[0]){eat++;}
-    if(ptr->call[0] == ptr->cand[1]){bite++;}
-    if(ptr->call[0] == ptr->cand[2]){bite++;}
-    if(ptr->call[1] == ptr->cand[0]){bite++;}
-    if(ptr->call[1] == ptr->cand[1]){eat++;}
-    if(ptr->call[1] == ptr->cand[2]){bite++;}
-    if(ptr->call[2] == ptr->cand[0]){bite++;}
-    if(ptr->call[2] == ptr->cand[1]){bite++;}
-    if(ptr->call[2] == ptr->cand[2]){eat++;}
-    ptr->eat = eat;
-    ptr->bite = bite;
-}
+int node_settype(int call[3], int depth, int call_hist[3], int parent_type){
 
-void node_settype(node *ptr){
-    if(ptr->type){
-        for(int i=0; i<ptr->depth; i++){
-            ptr->type = calc_type(&ptr->call_hist[ptr->depth*3], &ptr->call_hist[i*3], ptr->type);
-            if(ptr->type == DV){
+    int type = parent_type;
+    if(type != DV){
+        for(int i=0; i<depth; i++){
+            type = calc_type(call, &call_hist[depth*DI], parent_type);
+            if(type == DV){
                 break;
             }
         }
     }
+
+    return type;
+// void node_settype(int depth, int call_hist[HIST*DI]){
+//     if(ptr->type){
+//         for(int i=0; i<depth; i++){
+//             ptr->type = calc_type(&ptr->call_hist[ptr->depth*3], &ptr->call_hist[i*3], ptr->type);
+//             if(ptr->type == DV){
+//                 break;
+//             }
+//         }
+//     }
+// }
 }
 
-void node_setcand(node *ptr, int cand_len, int cand_lst[SIZE*3]){
-
-    int idx = 0, eat, bite;
-    for(int i=0; i<cand_len; i++){
-
-        // ジャッジ
-        eat = 0;
-        bite = 0;
-
-        if(ptr->call[0] == cand_lst[i*3  ]){eat++;}
-        if(ptr->call[0] == cand_lst[i*3+1]){bite++;}
-        if(ptr->call[0] == cand_lst[i*3+2]){bite++;}
-        if(ptr->call[1] == cand_lst[i*3  ]){bite++;}
-        if(ptr->call[1] == cand_lst[i*3+1]){eat++;}
-        if(ptr->call[1] == cand_lst[i*3+2]){bite++;}
-        if(ptr->call[2] == cand_lst[i*3  ]){bite++;}
-        if(ptr->call[2] == cand_lst[i*3+1]){bite++;}
-        if(ptr->call[2] == cand_lst[i*3+2]){eat++;}
-
-        if(ptr->eat == eat && ptr->bite == bite){
-            ptr->cand_lst[idx*3  ] = cand_lst[i*3  ];
-            ptr->cand_lst[idx*3+1] = cand_lst[i*3+1];
-            ptr->cand_lst[idx*3+2] = cand_lst[i*3+2];
-            idx++;
-        }
-    }
-    ptr->cand_len = idx;
-}
-
-void node_setcall(node *ptr, int depth){
+void node_setcall(node_t *ptr){
 
     hash *h_lst = NULL;
     int idx_lst[HIST];
@@ -181,7 +156,7 @@ void node_setcall(node *ptr, int depth){
     for(int i=0; i<SIZE; i++){
 
         flag_zero = 1;
-        for(int j=0; j<=depth; j++){
+        for(int j=0; j<=ptr->depth; j++){
             idx_lst[j] = calc_idx(&CAND_T[i*3], &ptr->call_hist[j*3], ptr->type);
             if(idx_lst[j] == 0){
                 flag_zero = 0;
@@ -189,7 +164,7 @@ void node_setcall(node *ptr, int depth){
             }
         }
 
-        if(flag_zero && hash_search(h_lst, idx_lst, depth)){
+        if(flag_zero && hash_search(h_lst, idx_lst, ptr->depth)){
             hash_push(&h_lst, idx_lst);
             ptr->call_lst[idx*3  ] = CAND_T[i*3  ];
             ptr->call_lst[idx*3+1] = CAND_T[i*3+1];
@@ -202,53 +177,111 @@ void node_setcall(node *ptr, int depth){
     hash_clear(&h_lst);
 }
 
-void node_print(node* ptr){
-    printf("call[3] \t= %d%d%d\tcand[3] = %d%d%d\n", 
-        ptr->call[0], ptr->call[1], ptr->call[2], 
-        ptr->cand[0], ptr->cand[1], ptr->cand[2]);
-    printf("eat bite \t= %d-%d\n", ptr->eat, ptr->bite);
-    printf("depth   \t= %d\n", ptr->depth);
-    printf("call_hist[%d] \t= [", ptr->depth+1);
-    for(int i=0; i<=ptr->depth; i++){
-        printf("%d%d%d", ptr->call_hist[i*3], ptr->call_hist[i*3+1], ptr->call_hist[i*3+2]);
-        if(i != ptr->depth){printf(" ");}
-    }
-    printf("]\n");
-    printf("cand_lst[%d] \t= [", ptr->cand_len);
-    for(int i=0; i<ptr->cand_len; i++){
-        printf("%d%d%d", ptr->cand_lst[i*3], ptr->cand_lst[i*3+1], ptr->cand_lst[i*3+2]);
-        if(i >= 20){
-            printf(" ... ");
-            break;
-        }else if(i != ptr->cand_len-1){
-            printf(" ");
-        }
-    }
-    printf("]\n");
-    printf("call_lst[%d] \t= [", ptr->call_len);
-    for(int i=0; i<ptr->call_len; i++){
-        printf("%d%d%d", ptr->call_lst[i*3], ptr->call_lst[i*3+1], ptr->call_lst[i*3+2]);
-        if(i >= 20){
-            printf(" ... ");
-            break;
-        }else if(i != ptr->call_len-1){
-            printf(" ");
-        }
-    }
-    printf("]\n");
-    printf("score   \t= %lf\n", ptr->score);
-    printf("var     \t= %lf\n", ptr->var);
-    printf("\n");
+int node_setjudge(int call[3], int cand[3]){
+    int eat = 0, bite = 0;
+    if(call[0] == cand[0]){eat++;}
+    if(call[0] == cand[1]){bite++;}
+    if(call[0] == cand[2]){bite++;}
+    if(call[1] == cand[0]){bite++;}
+    if(call[1] == cand[1]){eat++;}
+    if(call[1] == cand[2]){bite++;}
+    if(call[2] == cand[0]){bite++;}
+    if(call[2] == cand[1]){bite++;}
+    if(call[2] == cand[2]){eat++;}
+
+    return judge_enum(eat, bite);
 }
 
-// void queue_restore(que *queue){
+int judge_enum(int eat, int bite){
 
-//     node *ptr = queue_pop(&queue);
-//     for(int i=0; i<ptr->cand_len; i++){
-//         for(int j=0; j<ptr->call_len; j++){
-//             node *new = node_create(ptr->call, ptr->call_hist, ptr->depth+1, ptr->call_hist);
+    int score;
+    if(      eat == 0){
+        if(      bite == 0){
+            score = J0_0;
+        }else if(bite == 1){
+            score = J0_1;
+        }else if(bite == 2){
+            score = J0_2;
+        }else if(bite == 3){
+            score = J0_3;
+        }else{
+            fprintf(stderr, "judgement error\n");
+            exit(1);
+        }
+    }else if(eat == 1){
+        if(      bite == 0){
+            score = J1_0;
+        }else if(bite == 1){
+            score = J1_1;
+        }else if(bite == 2){
+            score = J1_2;
+        }else{
+            fprintf(stderr, "judgement error\n");
+            exit(1);
+        }
+    }else if(eat == 2){
+        if(bite == 0){
+            score = J2_0;
+        }else{
+            fprintf(stderr, "judgement error\n");
+            exit(1);
+        }
+    }else if(eat == 3){
+        if(bite == 0){
+            score = J3_0;
+        }else{
+            fprintf(stderr, "judgement error\n");
+            exit(1);
+        }
+    }else{
+        fprintf(stderr, "judgement error\n");
+        exit(1);
+    }
 
-//         }
-//     }
-// }
+    return score;
+}
 
+// ジャッジリスト作成関数をここにつくる
+
+judge_t* judge_create(int judge){
+
+    // メモリの動的確保
+    judge_t *new = (judge_t*)malloc(sizeof(judge_t));
+    if(new == NULL){
+        fprintf(stderr, "memory allocation error.\n");
+        exit(1);
+    }
+
+    // 引数データの格納
+    new->judge = judge;
+
+    // 固定データの格納
+    new->next = NULL;
+    new->cand_len = 0;
+    new->head = NULL;
+    new->tail = NULL;
+
+    // cand_lstの格納
+
+    return new;
+}
+
+void node_push(node_t *ptr, judge_t *child){
+
+    if(ptr->head == NULL){
+        ptr->head = child;
+    }else{
+        ptr->tail->next = child;
+    }
+    ptr->tail = child;
+}
+
+void judge_push(judge_t *ptr, node_t *child){
+
+    if(ptr->head == NULL){
+        ptr->head = child;
+    }else{
+        ptr->tail->next = child;
+    }
+    ptr->tail = child;
+}

@@ -6,90 +6,31 @@
 
 #include "symbol.h"
 
-// typedef struct node{
-//     int depth;                /* 質問の回数      */
-//     int call_hist[HIST*3];    /* 質問履歴        */
-//     int call[3];              /* 質問            */
-//     int type;                 /* 候補タイプ      */
-//     int cand[3];              /* 解答            */
-//     int eat;                  /* eat             */
-//     int bite;                 /* bite            */
-//     int call_len;             /* 質問候補長さ    */
-//     int call_lst[SIZE*3];     /* 質問候補リスト  */
-//     int cand_len;             /* 解答候補長さ    */
-//     int cand_lst[SIZE*3];     /* 解答候補リスト  */
-//     double score;             /* 評価値          */
-//     double var;               /* 評価値の分散    */
-//     struct node *next;
-//     struct node2 *head; /*                 */
-//     struct node2 *tail; /*                 */
-// }node;
-/* node型はツリー構造を想定しているが単方向リストとしても使える。
- * 単方向リストはque関数を用いて制御する。
- * ツリーは？
- * */
+/* ノードを生成 */
+node_t* node_create(
+    int depth, 
+    int call[DI], 
+    int call_hist[HIST*DI], 
+    int parent_type, 
+    int cand_len, 
+    int cand_lst[SIZE*DI]
+);
 
+int node_settype(int call[3], int depth, int call_hist[3], int parent_type);
 
-// typedef struct node2{
-//     int judge;             /*  */
-//     int judge_hist[HIST];  /*  */
-//     double score;          /*  */
-//     double var;            /*  */
-//     struct node2 *next;    /*  */
-//     struct node *head;     /*  */
-//     struct node *tail;     /*  */
-// }node2;
+void node_setcall(node_t *ptr);
 
-void node_push(node* ptr, node2* child);
+int node_setjudge(int call[3], int cand[3]);
 
-// typedef struct que{
-//     int len;
-//     node *head;
-//     node *tail;
-// }que;
-// /* node型を単方向リストとして制御するための構造体
-//  * ポップすることはないのでまとめてclearする
-//  * */
+int judge_enum(int eat, int bite);
 
-/* ノードをキューにする関数群 */
-void queue_init(que *queue);
-/* キュー管理構造体を初期化 
- * node型は*/
+judge_t* judge_create(int judge);
 
-void queue_push(que *queue, node *ptr);
-/* キューにプッシュ */
+void node_push(node_t *ptr, judge_t *child);
 
-node* queue_pop(que *queue);
-/* キューからポップ */
-
-/* ノードをスタックにする関数群 */
-void stack_push(node **stack, node *ptr);
-/* キューにプッシュ */
-
-node* stack_pop(node **stack);
-/* キューからポップ */
+void judge_push(judge_t *ptr, node_t *child);
 
 /* ノードを確認する関数 */
-void node_print(node *ptr);
-
-/* ノードを生成 */
-node* node_create(int call[3], int cand[3], int depth, int type, int call_hist[HIST*3]);
-
-/* ノードに情報を追加 */
-void node_setjudge(node *ptr);                   /* ジャッジ */
-void node_settype(node *ptr);
-void node_setcand(node *ptr, int cand_len, int cand_lst[SIZE*3]);
-void node_setcall(node *ptr, int depth);  /* 質問候補 */
-
-// void queue_restore(que *queue);          /* キューに補充 */
-
-
-/*  */
-
-
-
-
-
-
+// void node_print(node_t *ptr);
 
 #endif
