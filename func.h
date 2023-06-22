@@ -24,7 +24,7 @@ int node_setjudge(int call[3], int cand[3]);
 
 int judge_enum(int eat, int bite);
 
-judge_t* judge_create(int judge);
+judge_t* judge_create(int judge, int cand[DI]);
 
 void node_push(node_t *ptr, judge_t *child);
 
@@ -32,5 +32,15 @@ void judge_push(judge_t *ptr, node_t *child);
 
 /* ノードを確認する関数 */
 void node_print(node_t *ptr);
+
+// 探索木を出力する
+void tree_print(node_t *ptr);
+
+void branch_print(judge_t *ptr, int depth);
+void judge_print(int judge);
+// 探索木のメモリを解放する
+void tree_clear(node_t *ptr);
+void branch_clear(judge_t *ptr);
+
 
 #endif

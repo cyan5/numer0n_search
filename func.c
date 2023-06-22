@@ -53,10 +53,10 @@ node_t* node_create(
     judge_t *tmp, *new;
 
     // ジャッジが既に存在するか探索
-    for(int i=0; i<ptr->cand_len; i++){
+    for(int i=0; i<cand_len; i++){
 
         tmp = ptr->head;
-        judge = node_setjudge(call, &cand_lst[i]);
+        judge = node_setjudge(call, &cand_lst[i*DI]);
 
         flag = 1;
         while(tmp != NULL){
@@ -64,8 +64,9 @@ node_t* node_create(
             // 見つかったとき
             if(tmp->judge == judge){
                 flag = 0;
+                tmp->cand_len++;
                 for(int j=0; j<DI; j++){
-                    tmp->cand_lst[tmp->cand_len*DI+j] = cand_lst[i+j];
+                    tmp->cand_lst[tmp->cand_len*DI+j] = cand_lst[i*DI+j];
                 }
                 break;
             }else{
@@ -76,7 +77,7 @@ node_t* node_create(
         // 見つからなかったとき
         if(flag){
             ptr->judge_len++;
-            new = judge_create(judge);
+            new = judge_create(judge, &cand_lst[i*DI]);
             node_push(ptr, new);
         }
     }
@@ -97,37 +98,27 @@ int node_settype(int call[3], int depth, int call_hist[3], int parent_type){
     }
 
     return type;
-// void node_settype(int depth, int call_hist[HIST*DI]){
-//     if(ptr->type){
-//         for(int i=0; i<depth; i++){
-//             ptr->type = calc_type(&ptr->call_hist[ptr->depth*3], &ptr->call_hist[i*3], ptr->type);
-//             if(ptr->type == DV){
-//                 break;
-//             }
-//         }
-//     }
-// }
 }
 
 void node_setcall(node_t *ptr){
 
-    hash *h_lst = NULL;
-    int idx_lst[HIST];
-    int flag_zero;
+    hash *h_lst = NULL;    // ハッシュ値リスト
+    int idx_lst[HIST];     // 
+    int flag_same;         // 同じ質問はしない
 
     int idx = 0;
     for(int i=0; i<SIZE; i++){
 
-        flag_zero = 1;
+        flag_same = 1;
         for(int j=0; j<=ptr->depth; j++){
             idx_lst[j] = calc_idx(&CAND_T[i*3], &ptr->call_hist[j*3], ptr->type);
-            if(idx_lst[j] == 0){
-                flag_zero = 0;
+            if(idx_lst[j] == 0){   // 同じ質問
+                flag_same = 0;
                 break;
             }
         }
 
-        if(flag_zero && hash_search(h_lst, idx_lst, ptr->depth)){
+        if(flag_same && hash_search(h_lst, idx_lst, ptr->depth)){
             hash_push(&h_lst, idx_lst);
             ptr->call_lst[idx*3  ] = CAND_T[i*3  ];
             ptr->call_lst[idx*3+1] = CAND_T[i*3+1];
@@ -137,7 +128,6 @@ void node_setcall(node_t *ptr){
     }
 
     ptr->call_len = idx;
-    printf("%d\n", idx);
     hash_clear(&h_lst);
 }
 
@@ -169,7 +159,7 @@ int judge_enum(int eat, int bite){
         }else if(bite == 3){
             score = J0_3;
         }else{
-            fprintf(stderr, "judgement error\n");
+            fprintf(stderr, "judgement error : eat = %d, bite = %d\n", eat, bite);
             exit(1);
         }
     }else if(eat == 1){
@@ -180,25 +170,25 @@ int judge_enum(int eat, int bite){
         }else if(bite == 2){
             score = J1_2;
         }else{
-            fprintf(stderr, "judgement error\n");
+            fprintf(stderr, "judgement error : eat = %d, bite = %d\n", eat, bite);
             exit(1);
         }
     }else if(eat == 2){
         if(bite == 0){
             score = J2_0;
         }else{
-            fprintf(stderr, "judgement error\n");
+            fprintf(stderr, "judgement error : eat = %d, bite = %d\n", eat, bite);
             exit(1);
         }
     }else if(eat == 3){
         if(bite == 0){
             score = J3_0;
         }else{
-            fprintf(stderr, "judgement error\n");
+            fprintf(stderr, "judgement error : eat = %d, bite = %d\n", eat, bite);
             exit(1);
         }
     }else{
-        fprintf(stderr, "judgement error\n");
+        fprintf(stderr, "judgement error : eat = %d, bite = %d\n", eat, bite);
         exit(1);
     }
 
@@ -207,7 +197,7 @@ int judge_enum(int eat, int bite){
 
 // ジャッジリスト作成関数をここにつくる
 
-judge_t* judge_create(int judge){
+judge_t* judge_create(int judge, int cand[DI]){
 
     // メモリの動的確保
     judge_t *new = (judge_t*)malloc(sizeof(judge_t));
@@ -218,14 +208,15 @@ judge_t* judge_create(int judge){
 
     // 引数データの格納
     new->judge = judge;
+    for(int i=0; i<DI; i++){
+        new->cand_lst[i] = cand[i];
+    }
 
     // 固定データの格納
     new->next = NULL;
-    new->cand_len = 0;
+    new->cand_len = 1;
     new->head = NULL;
     new->tail = NULL;
-
-    // cand_lstの格納
 
     return new;
 }
@@ -280,4 +271,92 @@ void node_print(node_t *ptr){
         }
     }
     printf("]\n");
+    printf("judge_len \t= %d\n", ptr->judge_len);
+
+    printf("\n");
+}
+
+///////
+
+void tree_print(node_t *ptr){
+
+    for(int i=0; i<ptr->depth*2; i++){
+        printf("    ");
+    }
+    printf("%d%d%d (%d)\n", 
+        ptr->call_hist[ptr->depth*DI], 
+        ptr->call_hist[ptr->depth*DI+1], 
+        ptr->call_hist[ptr->depth*DI+2], 
+        ptr->judge_len);
+
+    judge_t *tmp = ptr->head;
+    while(tmp != NULL){
+        branch_print(tmp, ptr->depth);
+        tmp = tmp->next;
+    }
+}
+
+void branch_print(judge_t *ptr, int depth){
+
+    for(int i=0; i<depth*2+1; i++){
+        printf("    ");
+    }
+    judge_print(ptr->judge);
+    printf(" (%d)\n", ptr->cand_len);
+
+    node_t *tmp = ptr->head;
+    while(tmp != NULL){
+        tree_print(tmp);
+        tmp = tmp->next;
+    }
+}
+
+void judge_print(int judge){
+
+    switch(judge){
+        case J3_0:
+            printf("3 - 0"); break;
+        case J2_0:
+            printf("2 - 0"); break;
+        case J1_2:
+            printf("1 - 2"); break;
+        case J1_1:
+            printf("1 - 1"); break;
+        case J1_0:
+            printf("1 - 0"); break;
+        case J0_3:
+            printf("0 - 3"); break;
+        case J0_2:
+            printf("0 - 2"); break;
+        case J0_1:
+            printf("0 - 1"); break;
+        case J0_0:
+            printf("0 - 0"); break;
+        default:
+            fprintf(stderr, "judge print error : %d\n", judge);
+            exit(1);
+    }
+}
+
+// 探索木のメモリを解放する
+void tree_clear(node_t *ptr){
+
+    judge_t *tmp1 = ptr->head, *tmp2;
+    while(tmp1 != NULL){
+        tmp2 = tmp1->next;
+        branch_clear(tmp1);
+        tmp1 = tmp2;
+    }
+    free(ptr);
+}
+
+void branch_clear(judge_t *ptr){
+
+    node_t *tmp1 = ptr->head, *tmp2;
+    while(tmp1 != NULL){
+        tmp2 = tmp1->next;
+        tree_clear(tmp1);
+        tmp1 = tmp2;
+    }
+    free(ptr);
 }

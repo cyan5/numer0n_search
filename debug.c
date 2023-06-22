@@ -6,11 +6,10 @@
 #include "symbol.h"
 
 /* 一時停止する */
-void stop(void){
-    printf("breakpoint\n");
+void breakpoint(void){
+    printf("breakpoint : ");
     int tmp;
     if(scanf("%d", &tmp) != 1){
-        tmp++;
         exit(1);
     }
 }

@@ -57,7 +57,7 @@ enum judge {
 
 // デバッグ用関数
 // プログラムを一時停止する
-void stop(void);
+void breakpoint(void);
 
 // checkを出力する
 void check(void);

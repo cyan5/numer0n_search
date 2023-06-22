@@ -1,22 +1,23 @@
 .PHONY: all
-all: main.o func.o call.o cand.o data.o debug.o
+all: obj/main.o obj/func.o obj/call.o obj/cand.o obj/data.o obj/debug.o
+# all: obj/main.o obj/func.o obj/call.o obj/cand.o obj/data.o obj/debug.o
 	gcc -Wall -O2 obj/*.o
-main.o: main.c
+obj/main.o: main.c
 	gcc -Wall -O2 -c -o obj/main.o main.c
-func.o: func.c
+obj/func.o: func.c
 	gcc -Wall -O2 -c -o obj/func.o func.c
-call.o: call.c
+obj/call.o: call.c
 	gcc -Wall -O2 -c -o obj/call.o call.c
-cand.o: cand.c
+obj/cand.o: cand.c
 	gcc -Wall -O2 -c -o obj/cand.o cand.c
-data.o: data.c
+obj/data.o: data.c
 	gcc -Wall -O2 -c -o obj/data.o data.c
-debug.o: debug.c
+obj/debug.o: debug.c
 	gcc -Wall -O2 -c -o obj/debug.o debug.c
 
 .PHONY: clean
 clean:
-	rm -rf ./a.out obj/*.o
+	rm -f ./a.out obj/*.o
 	@echo clean completed.
 
 # depends header

@@ -27,8 +27,7 @@ int main(void){
         call[i] = i;
     }
     int call_hist[HIST*DI];
-    node_t *root;
-    root = node_create(
+    node_t *root = node_create(
         0,           // depth
         call,        // call
         call_hist,   // call_hist
@@ -38,195 +37,50 @@ int main(void){
 
     // ルートをキューにプッシュ
     queue_push(queue, root);
-    printf("queue_push\n");
+    // printf("queue_push\n");
 
     // 探索
-    int node_idx;
     node_t *node_ptr, *new;
     judge_t *judge_ptr;
-    while(queue->head != NULL){
     // for(int i=0; i<1; i++){
+    while(queue->head != NULL){
 
         node_ptr = queue_pop(queue);
-        printf("queue_pop\n");
         node_print(node_ptr);
-        stop();
 
-        node_idx = 0;
         judge_ptr = node_ptr->head;
         while(judge_ptr != NULL){
 
-            new = node_create(
-                node_ptr->depth+1, 
-                &node_ptr->call_lst[node_idx*DI], 
-                node_ptr->call_hist, 
-                node_ptr->type, 
-                judge_ptr->cand_len, 
-                judge_ptr->cand_lst);
-            judge_push(judge_ptr, new);
-            queue_push(queue, new);
-            printf("queue push\n");
+            for(int j=0; j<node_ptr->call_len; j++){
 
-            node_idx++;
+                if(judge_ptr->cand_len >= 2){
+
+                    new = node_create(
+                        node_ptr->depth+1, 
+                        &node_ptr->call_lst[j*DI], 
+                        node_ptr->call_hist, 
+                        node_ptr->type, 
+                        judge_ptr->cand_len, 
+                        judge_ptr->cand_lst);
+                    judge_push(judge_ptr, new);
+
+                    queue_push(queue, new);
+                }
+            }
             judge_ptr = judge_ptr->next;
         }
     }
 
+    // 探索木の出力
+    tree_print(root);
 
-
-    // ノードに質問とジャッジを追加
-    
-    
-    
-    /*
-    node_setjudge(new);                // eat, bite
-    node_setcall(new, 0);              // 
-    node_setcand(new, SIZE, CAND_T);   // 
-
-    node_print(new);
-    */
-    
-
-    
-    /*
-    new = node_create();
-
-    queue_push(que, new);
-
-    while(queue->head != NULL){
-
-        ptr = queue_pop()
-
-        for(i=0; i<ptr->cand_len; i++){
-
-        }
-        queue_push(que, new);
-    }
-    
-    
-    
-    */
-
-    // for(i=0; i<SIZE; i++){
-
-        
-    // }
-
-    // ルートノードをスタックorキューにプッシュ
-    // queue_push(queue, new);
-    // stack_push(&stack, new);
-
-
-    // check function
-    // while(queue->head != NULL){
-
-    //     ptr = queue_pop(queue);
-    //     // node_print(ptr);
-
-    // }
-
-    // 
-    #if 0
-    while(0){
-    // while(queue->head != NULL){
-    // while(stack != NULL){
-
-        // キューからポップ
-        ptr = queue_pop(queue);
-        // ptr = stack_pop(&stack);
-        node_print(ptr);
-
-        // ノード判定
-        if(ptr->cand_len == 1){
-            ptr->score = 1;
-            ptr->var = 0;
-        }else if(ptr->cand_len == 2){
-            ptr->score = 1.5;
-            ptr->var = 0.25;
-        }else if(ptr->depth == 2){
-            ptr->score = -1;
-        }else{
-            // 子ノードをキューにプッシュ
-            // for(i=0; i<1; i++){
-            for(i=0; i<ptr->call_len; i++){
-                for(j=0; j<1; j++){
-                // for(j=0; j<ptr->cand_len; j++){
-
-                    // nodeを作成
-                    call[0] = ptr->call_lst[i*3  ];
-                    call[1] = ptr->call_lst[i*3+1];
-                    call[2] = ptr->call_lst[i*3+2];
-                    cand[0] = ptr->cand_lst[j*3  ];
-                    cand[1] = ptr->cand_lst[j*3+1];
-                    cand[2] = ptr->cand_lst[j*3+2];
-                    new = node_create(call, cand, ptr->depth+1, ptr->type, ptr->call_hist);
-
-                    // ノードに情報を追加
-                    node_setjudge(new);
-                    node_settype(new);
-                    node_setcand(new, ptr->cand_len, ptr->cand_lst);
-                    node_setcall(new, ptr->depth);
-
-                    // ルートノードをキューにプッシュ
-                    queue_push(queue, new);
-                    // stack_push(&stack, new);
-                }
-            }
-        }
-
-        // 親ノードをヒープにプッシュ
-        // heap_push(ptr);
-    }
-
-    free(queue);
-
-    #endif
-
-
-
-
-    /*
-    node_create, queue_pushを最初に720回行うプログラムに変更
-    node要素の先頭に、回答候補、eat, biteを追加
-    */
-
-    // node *new;
-    // node *new;
-    // {
-    //     // キューの先頭をポップ
-    //     new = queue_pop(&queue);
-
-    //     for(i=0; i<new->cand_len; i++){
-    //         for(j=0; j<new->call_len; j++){
-    //             call[0] = 
-    //             new = node_create()
-    //         }
-    //     }
-    // }
-
-
-    // 
-    // while(1){
-    //     // キューからポップ
-        
-    //     // キューに補充
-    //     queue_restore(&queue);
-    // }
-
-    // queue_push(&queue, &new);
-    
-    // while(queue != NULL){
-    //     queue_to_heap();
-    // }
-
-    // while()
-
-    // while(queue != NULL){
-    //     queue_to_heap(queue, heap);
-    // }
 
     double clock_2 = clock();
+
     printf("Processing time = %.4lf sec.\n", (clock_2-clock_1)/1000000);
+
+    queue_print(queue);
+    queue_clear(queue);
     
 
     // 入力
@@ -257,6 +111,10 @@ int main(void){
     //         // call_tree
     //     }
     // }
+
+
+    // 探索木のメモリ解放
+    tree_clear(root);
 
     return 0;
 }
