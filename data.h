@@ -15,7 +15,10 @@ typedef struct que{
 }que;
 
 typedef struct stk{
-    node_t *tail;
+    int len;
+    int push_count;
+    int pop_count;
+    struct data *head;
 }stk;
 
 typedef struct data{
@@ -32,6 +35,7 @@ void queue_clear(que *queue);
 stk* stack_init(void);
 void stack_push(stk *stack, node_t *ptr);
 node_t* stack_pop(stk *stack);
+void stack_print(stk *stack);
 void stack_clear(stk *stack);
 
 #endif

@@ -18,8 +18,8 @@ int main(void){
     double clock_1 = clock();
 
     // スタックorキューを生成
+    // stk *stack = stack_init();
     que *queue = queue_init();
-    // stk *stack = stack_init(void);
 
     // ルートノードを生成
     int call[DI];
@@ -35,16 +35,18 @@ int main(void){
         SIZE,        // cand_len
         CAND_T);     // cand_lst
 
-    // ルートをキューにプッシュ
+    // ルートをスタックorキューにプッシュ
+    // stack_push(stack, root);
     queue_push(queue, root);
-    // printf("queue_push\n");
 
     // 探索
     node_t *node_ptr, *new;
     judge_t *judge_ptr;
-    // for(int i=0; i<1; i++){
+    // for(int i=0; i<6; i++){
+    // while(stack->head != NULL){
     while(queue->head != NULL){
 
+        // node_ptr = stack_pop(stack);
         node_ptr = queue_pop(queue);
         node_print(node_ptr);
 
@@ -64,7 +66,11 @@ int main(void){
                         judge_ptr->cand_lst);
                     judge_push(judge_ptr, new);
 
+                    // stack_push(stack, new);
+                    // stack_print(stack);
                     queue_push(queue, new);
+                    // queue_print(queue);
+
                 }
             }
             judge_ptr = judge_ptr->next;
@@ -72,7 +78,7 @@ int main(void){
     }
 
     // 探索木の出力
-    tree_print(root);
+    // tree_print(root);
 
 
     double clock_2 = clock();
@@ -80,7 +86,9 @@ int main(void){
     printf("Processing time = %.4lf sec.\n", (clock_2-clock_1)/1000000);
 
     queue_print(queue);
+    // stack_print(stack);
     queue_clear(queue);
+    // stack_clear(stack);
     
 
     // 入力
