@@ -8,45 +8,6 @@
 
 extern int CAND_T[SIZE*DI];
 
-// void node_print(node_t *ptr){
-//     printf("call[3] \t= %d%d%d\tcand[3] = %d%d%d\n", 
-//         ptr->call[0], ptr->call[1], ptr->call[2], 
-//         ptr->cand[0], ptr->cand[1], ptr->cand[2]);
-//     printf("eat bite \t= %d-%d\n", ptr->eat, ptr->bite);
-//     printf("depth   \t= %d\n", ptr->depth);
-//     printf("call_hist[%d] \t= [", ptr->depth+1);
-//     for(int i=0; i<=ptr->depth; i++){
-//         printf("%d%d%d", ptr->call_hist[i*3], ptr->call_hist[i*3+1], ptr->call_hist[i*3+2]);
-//         if(i != ptr->depth){printf(" ");}
-//     }
-//     printf("]\n");
-//     printf("cand_lst[%d] \t= [", ptr->cand_len);
-//     for(int i=0; i<ptr->cand_len; i++){
-//         printf("%d%d%d", ptr->cand_lst[i*3], ptr->cand_lst[i*3+1], ptr->cand_lst[i*3+2]);
-//         if(i >= 20){
-//             printf(" ... ");
-//             break;
-//         }else if(i != ptr->cand_len-1){
-//             printf(" ");
-//         }
-//     }
-//     printf("]\n");
-//     printf("call_lst[%d] \t= [", ptr->call_len);
-//     for(int i=0; i<ptr->call_len; i++){
-//         printf("%d%d%d", ptr->call_lst[i*3], ptr->call_lst[i*3+1], ptr->call_lst[i*3+2]);
-//         if(i >= 20){
-//             printf(" ... ");
-//             break;
-//         }else if(i != ptr->call_len-1){
-//             printf(" ");
-//         }
-//     }
-//     printf("]\n");
-//     printf("score   \t= %lf\n", ptr->score);
-//     printf("var     \t= %lf\n", ptr->var);
-//     printf("\n");
-// }
-
 node_t* node_create(
     int depth, 
     int call[DI], 
@@ -68,7 +29,7 @@ node_t* node_create(
         ptr->call_hist[i] = call_hist[i];
     }
     for(int i=0; i<DI; i++){
-        call_hist[depth*DI+i] = call[i];
+        ptr->call_hist[depth*DI+i] = call[i];
     }
     ptr->type = node_settype(call, depth, call_hist, parent_type);
     ptr->cand_len = cand_len;
@@ -89,13 +50,15 @@ node_t* node_create(
 
     // ジャッジリストを作成
     int judge, flag = 1;
-    judge_t *tmp = ptr->head, *new;
+    judge_t *tmp, *new;
 
     // ジャッジが既に存在するか探索
     for(int i=0; i<ptr->cand_len; i++){
 
+        tmp = ptr->head;
         judge = node_setjudge(call, &cand_lst[i]);
 
+        flag = 1;
         while(tmp != NULL){
 
             // 見つかったとき
@@ -174,6 +137,7 @@ void node_setcall(node_t *ptr){
     }
 
     ptr->call_len = idx;
+    printf("%d\n", idx);
     hash_clear(&h_lst);
 }
 
@@ -284,4 +248,46 @@ void judge_push(judge_t *ptr, node_t *child){
         ptr->tail->next = child;
     }
     ptr->tail = child;
+}
+
+void node_print(node_t *ptr){
+    printf("depth   \t= %d\n", ptr->depth);
+    printf("call_hist[%d] \t= [", ptr->depth+1);
+    for(int i=0; i<=ptr->depth; i++){
+        printf("%d%d%d", ptr->call_hist[i*3], ptr->call_hist[i*3+1], ptr->call_hist[i*3+2]);
+        if(i != ptr->depth){printf(" ");}
+    }
+    printf("]\n");
+    printf("cand_lst[%d] \t= [", ptr->cand_len);
+    for(int i=0; i<ptr->cand_len; i++){
+        printf("%d%d%d", ptr->cand_lst[i*3], ptr->cand_lst[i*3+1], ptr->cand_lst[i*3+2]);
+        if(i >= 20){
+            printf(" ... ");
+            break;
+        }else if(i != ptr->cand_len-1){
+            printf(" ");
+        }
+    }
+    printf("]\n");
+    printf("call_lst[%d] \t= [", ptr->call_len);
+    for(int i=0; i<ptr->call_len; i++){
+        printf("%d%d%d", ptr->call_lst[i*3], ptr->call_lst[i*3+1], ptr->call_lst[i*3+2]);
+        if(i >= 20){
+            printf(" ... ");
+            break;
+        }else if(i != ptr->call_len-1){
+            printf(" ");
+        }
+    }
+    printf("]\n");
+    
+    int count = 0;
+    judge_t *judge_ptr = ptr->head;
+    while(judge_ptr != NULL){
+        printf("%d\n", judge_ptr->judge);
+        judge_ptr = judge_ptr->next;
+        count++;
+    }
+    printf("count = %d\n", count);
+
 }

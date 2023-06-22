@@ -27,8 +27,8 @@ int main(void){
         call[i] = i;
     }
     int call_hist[HIST*DI];
-    node_t *new;
-    new = node_create(
+    node_t *root;
+    root = node_create(
         0,           // depth
         call,        // call
         call_hist,   // call_hist
@@ -37,15 +37,20 @@ int main(void){
         CAND_T);     // cand_lst
 
     // ルートをキューにプッシュ
-    queue_push(queue, new);
+    queue_push(queue, root);
+    printf("queue_push\n");
 
     // 探索
     int node_idx;
-    node_t *node_ptr;
+    node_t *node_ptr, *new;
     judge_t *judge_ptr;
-    while(queue->head != NULL){
+    // while(queue->head != NULL){
+    for(int i=0; i<1; i++){
 
         node_ptr = queue_pop(queue);
+        printf("queue_pop\n");
+        node_print(node_ptr);
+        stop();
 
         node_idx = 0;
         judge_ptr = node_ptr->head;
@@ -60,6 +65,7 @@ int main(void){
                 judge_ptr->cand_lst);
             judge_push(judge_ptr, new);
             queue_push(queue, new);
+            printf("queue push\n");
 
             node_idx++;
             judge_ptr = judge_ptr->next;

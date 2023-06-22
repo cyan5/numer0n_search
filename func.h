@@ -31,6 +31,6 @@ void node_push(node_t *ptr, judge_t *child);
 void judge_push(judge_t *ptr, node_t *child);
 
 /* ノードを確認する関数 */
-// void node_print(node_t *ptr);
+void node_print(node_t *ptr);
 
 #endif
