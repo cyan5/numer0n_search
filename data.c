@@ -63,7 +63,7 @@ node_t* queue_pop(que *queue){
 }
 
 void queue_print(que *queue){
-    printf("queue_len = %d\n", queue->len);
+    printf("len  : %d\n", queue->len);
     printf("push : %d\n", queue->push_count);
     printf("pop  : %d\n", queue->pop_count);
 }
@@ -86,28 +86,60 @@ stk* stack_init(void){
         fprintf(stderr, "memoly allocation error.\n");
         exit(1);
     }
+    new->len = 0;
+    new->push_count = 0;
+    new->pop_count = 0;
+    new->head = NULL;
     return new;
 }
 
 void stack_push(stk *stack, node_t *ptr){
 
-    ptr->next = stack->tail;
-    stack->tail = ptr;
+    data *dat = (data*)malloc(sizeof(data));
+    if(dat == NULL){
+        fprintf(stderr, "memoly allocation error.\n");
+        exit(1);
+    }
+    dat->ptr = ptr;
+
+    dat->next = stack->head;
+    stack->head = dat;
+
+    stack->len++;
+    stack->push_count++;
 }
 
 node_t* stack_pop(stk *stack){
 
-    if(stack->tail == NULL){
+    if(stack->head == NULL){
         fprintf(stderr, "stack underflow.\n");
         exit(1);
     }
     
-    node_t *ptr = stack->tail;
-    stack->tail = ptr->next;
+    data *tmp = stack->head;
+    node_t *ptr = tmp->ptr;
+
+    stack->head = tmp->next;
+
+    stack->len--;
+    stack->pop_count++;
 
     return ptr;
 }
 
+void stack_print(stk *stack){
+    printf("len  : %d", stack->len);
+    printf("\tpush : %d", stack->push_count);
+    printf("\tpop  : %d", stack->pop_count);
+    printf("\n");
+}
+
 void stack_clear(stk *stack){
+    data *ptr = stack->head, *tmp;
+    while(ptr != NULL){
+        tmp = ptr->next;
+        free(ptr);
+        ptr = tmp;
+    }
     free(stack);
 }

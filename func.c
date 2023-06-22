@@ -64,10 +64,10 @@ node_t* node_create(
             // 見つかったとき
             if(tmp->judge == judge){
                 flag = 0;
-                tmp->cand_len++;
                 for(int j=0; j<DI; j++){
                     tmp->cand_lst[tmp->cand_len*DI+j] = cand_lst[i*DI+j];
                 }
+                tmp->cand_len++;
                 break;
             }else{
                 tmp = tmp->next;
@@ -298,11 +298,11 @@ void tree_print(node_t *ptr){
 
 void branch_print(judge_t *ptr, int depth){
 
-    for(int i=0; i<depth*2+1; i++){
-        printf("    ");
-    }
-    judge_print(ptr->judge);
-    printf(" (%d)\n", ptr->cand_len);
+    // for(int i=0; i<depth*2+1; i++){
+    //     printf("    ");
+    // }
+    // judge_print(ptr->judge);
+    // printf(" (%d)\n", ptr->cand_len);
 
     node_t *tmp = ptr->head;
     while(tmp != NULL){
