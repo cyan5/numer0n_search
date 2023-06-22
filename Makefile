@@ -1,6 +1,5 @@
 .PHONY: all
 all: obj/main.o obj/func.o obj/call.o obj/cand.o obj/data.o obj/debug.o
-# all: obj/main.o obj/func.o obj/call.o obj/cand.o obj/data.o obj/debug.o
 	gcc -Wall -O2 obj/*.o
 obj/main.o: main.c
 	gcc -Wall -O2 -c -o obj/main.o main.c
@@ -22,9 +21,9 @@ clean:
 
 # depends header
 
-# cand.o: 
 call.o: symbol.h call.h
 func.o: symbol.h func.h call.h
 main.o: symbol.h func.h
+cand.o: symbol.h
 data.o: symbol.h data.h
 debug.o: symbol.h
