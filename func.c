@@ -280,14 +280,4 @@ void node_print(node_t *ptr){
         }
     }
     printf("]\n");
-    
-    int count = 0;
-    judge_t *judge_ptr = ptr->head;
-    while(judge_ptr != NULL){
-        printf("%d\n", judge_ptr->judge);
-        judge_ptr = judge_ptr->next;
-        count++;
-    }
-    printf("count = %d\n", count);
-
 }

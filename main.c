@@ -44,8 +44,8 @@ int main(void){
     int node_idx;
     node_t *node_ptr, *new;
     judge_t *judge_ptr;
-    // while(queue->head != NULL){
-    for(int i=0; i<1; i++){
+    while(queue->head != NULL){
+    // for(int i=0; i<1; i++){
 
         node_ptr = queue_pop(queue);
         printf("queue_pop\n");
