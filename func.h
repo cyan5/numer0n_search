@@ -43,7 +43,7 @@ void node_push(node_t *ptr, judge_t *child);
 void judge_push(judge_t *ptr, node_t *child);
 
 // // 探索木のメモリを解放する
-void tree_clear(node_t *ptr);
+void node_clear(node_t *ptr);
 void branch_clear(judge_t *ptr);
 
 #endif

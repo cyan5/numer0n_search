@@ -29,8 +29,7 @@ int main(void){
     double clock_1 = clock();
 
     // スタックorキューを生成
-    // stk *stack = stack_init();
-    que *queue = queue_init();
+    stk *stack = stack_init();
 
     // ルートノードを生成
     int call[DI];
@@ -47,32 +46,28 @@ int main(void){
         CAND_T);     // cand_lst
 
     // ルートをスタックorキューにプッシュ
-    // stack_push(stack, root);
-    queue_push(queue, root);
+    stack_push(stack, root);
 
     // 探索
     node_t *node_ptr, *new;
     judge_t *judge_ptr;
     // for(int i=0; i<6; i++){
-    // while(stack->head != NULL){
-    while(queue->head != NULL){
+    while(stack->head != NULL){
 
-        // node_ptr = stack_pop(stack);
-        node_ptr = queue_pop(queue);
-        // node_print(node_ptr);
-        queue_print(queue);
-        // breakpoint();
+        node_ptr = stack_pop(stack);
+        stack_print(stack);
 
         judge_ptr = node_ptr->head;
         while(judge_ptr != NULL){
 
             for(int j=0; j<node_ptr->call_len; j++){
 
-                // ノードを作る条件をここに書き込む
-                if(
-                    judge_ptr->cand_len >= 2 &&
-                    node_ptr->depth < 1
-                ){
+                // ノードを作らない条件をここに書き込む
+                if(judge_ptr->cand_len <= 2){
+                    // check();
+                }else if(node_ptr->depth >= 2){
+                    // check();
+                }else{  // ノードを作成
 
                     new = node_create(
                         node_ptr->depth+1, 
@@ -81,15 +76,15 @@ int main(void){
                         node_ptr->type, 
                         judge_ptr->cand_len, 
                         judge_ptr->cand_lst);
-                    judge_push(judge_ptr, new);
 
-                    // stack_push(stack, new);
-                    // stack_print(stack);
-                    queue_push(queue, new);
-                    // node_print(new);
-                    // breakpoint();
-                    // queue_print(queue);
-
+                    // ノードをプッシュしない条件
+                    if(node_ptr->cand_len == new->cand_len){
+                        node_clear(new);
+                        // check();
+                    }else{
+                        judge_push(judge_ptr, new);
+                        stack_push(stack, new);
+                    }
                 }
             }
             judge_ptr = judge_ptr->next;
@@ -102,17 +97,18 @@ int main(void){
 
     // 探索木の出力
     tree_print(root);
-    // tree_file(root, fp);
-    char str[256] = "test";
-    fputs(str, fp);
+    tree_fprint(fp, root); 
+    
+    // improve log
+    // d = 2  d = 3   d = 4   memo
+    // 11308  Killed  Killed  init
+    // 11123  Killed  Killed  解答を絞り込めない質問を枝刈り
 
 
     printf("Processing time = %.4lf sec.\n", (clock_2-clock_1)/1000000);
 
-    queue_print(queue);
-    // stack_print(stack);
-    queue_clear(queue);
-    // stack_clear(stack);
+    stack_print(stack);
+    stack_clear(stack);
     
 
     // 入力
@@ -146,7 +142,7 @@ int main(void){
 
 
     // 探索木のメモリ解放
-    tree_clear(root);
+    node_clear(root);
 
     // ファイル処理
     fclose(fp);

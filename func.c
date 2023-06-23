@@ -241,7 +241,7 @@ void judge_push(judge_t *ptr, node_t *child){
     ptr->tail = child;
 }
 
-void tree_clear(node_t *ptr){
+void node_clear(node_t *ptr){
 
     judge_t *tmp1 = ptr->head, *tmp2;
     while(tmp1 != NULL){
@@ -257,7 +257,7 @@ void branch_clear(judge_t *ptr){
     node_t *tmp1 = ptr->head, *tmp2;
     while(tmp1 != NULL){
         tmp2 = tmp1->next;
-        tree_clear(tmp1);
+        node_clear(tmp1);
         tmp1 = tmp2;
     }
     free(ptr);

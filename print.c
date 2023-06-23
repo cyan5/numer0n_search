@@ -73,39 +73,6 @@ void branch_print(judge_t *ptr, int depth){
     }
 }
 
-void tree_file(node_t *ptr, FILE *fp){
-
-    for(int i=0; i<ptr->depth*2; i++){
-        printf("    ");
-    }
-    printf("%d%d%d (%d)\n", 
-        ptr->call_hist[ptr->depth*DI], 
-        ptr->call_hist[ptr->depth*DI+1], 
-        ptr->call_hist[ptr->depth*DI+2], 
-        ptr->judge_len);
-
-    judge_t *tmp = ptr->head;
-    while(tmp != NULL){
-        branch_print(tmp, ptr->depth);
-        tmp = tmp->next;
-    }
-}
-
-void branch_file(judge_t *ptr, int depth, FILE *fp){
-
-    for(int i=0; i<depth*2+1; i++){
-        printf("    ");
-    }
-    judge_print(ptr->judge);
-    printf(" (%d)\n", ptr->cand_len);
-
-    node_t *tmp = ptr->head;
-    while(tmp != NULL){
-        tree_print(tmp);
-        tmp = tmp->next;
-    }
-}
-
 void judge_print(int judge){
 
     switch(judge){
@@ -127,6 +94,68 @@ void judge_print(int judge){
             printf("0 - 1"); break;
         case J0_0:
             printf("0 - 0"); break;
+        default:
+            fprintf(stderr, "judge print error : %d\n", judge);
+            exit(1);
+    }
+}
+
+void tree_fprint(FILE *fp, node_t *ptr){
+
+    for(int i=0; i<ptr->depth*2; i++){
+        fprintf(fp, "    ");
+    }
+    fprintf(fp, "* ");
+    fprintf(fp, "%d%d%d (%d)\n", 
+        ptr->call_hist[ptr->depth*DI], 
+        ptr->call_hist[ptr->depth*DI+1], 
+        ptr->call_hist[ptr->depth*DI+2], 
+        ptr->judge_len);
+
+    judge_t *tmp = ptr->head;
+    while(tmp != NULL){
+        branch_fprint(fp, tmp, ptr->depth);
+        tmp = tmp->next;
+    }
+}
+
+void branch_fprint(FILE *fp, judge_t *ptr, int depth){
+
+    for(int i=0; i<depth*2+1; i++){
+        fprintf(fp, "    ");
+    }
+    fprintf(fp, "* ");
+    judge_fprint(fp, ptr->judge);
+    fprintf(fp, " (%d)\n", ptr->cand_len);
+
+    node_t *tmp = ptr->head;
+    while(tmp != NULL){
+        tree_fprint(fp, tmp);
+        tmp = tmp->next;
+    }
+}
+
+void judge_fprint(FILE *fp, int judge){
+
+    switch(judge){
+        case J3_0:
+            fprintf(fp, "3 - 0"); break;
+        case J2_0:
+            fprintf(fp, "2 - 0"); break;
+        case J1_2:
+            fprintf(fp, "1 - 2"); break;
+        case J1_1:
+            fprintf(fp, "1 - 1"); break;
+        case J1_0:
+            fprintf(fp, "1 - 0"); break;
+        case J0_3:
+            fprintf(fp, "0 - 3"); break;
+        case J0_2:
+            fprintf(fp, "0 - 2"); break;
+        case J0_1:
+            fprintf(fp, "0 - 1"); break;
+        case J0_0:
+            fprintf(fp, "0 - 0"); break;
         default:
             fprintf(stderr, "judge print error : %d\n", judge);
             exit(1);
