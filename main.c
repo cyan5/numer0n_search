@@ -96,7 +96,6 @@ int main(void){
 
 
     // 探索木の出力
-    tree_print(root);
     tree_fprint(fp, root); 
     
     // improve log
@@ -108,7 +107,6 @@ int main(void){
     printf("Processing time = %.4lf sec.\n", (clock_2-clock_1)/1000000);
 
     stack_print(stack);
-    stack_clear(stack);
     
 
     // 入力
@@ -143,6 +141,7 @@ int main(void){
 
     // 探索木のメモリ解放
     node_clear(root);
+    stack_clear(stack);
 
     // ファイル処理
     fclose(fp);

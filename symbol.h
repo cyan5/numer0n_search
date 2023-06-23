@@ -37,6 +37,10 @@ typedef struct judge_t{
     struct node_t *tail;     //
 }judge_t;
 
+typedef struct size_d{
+    int data[SIZE*DI];
+}size_d;
+
 enum type {
     DV,   // 全てを区別する。notを返す
     NU,   // 全て区別しない
