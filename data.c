@@ -6,19 +6,6 @@
 #include "symbol.h"
 #include "data.h"
 
-// data* data_init(node_t *ptr){
-
-//     data *dat = (data*)malloc(sizeof(data));
-//     if(dat == NULL){
-//         fprintf(stderr, "memoly allocation error.\n");
-//         exit(1);
-//     }
-//     dat->ptr = ptr;
-//     dat->next = NULL;
-
-//     return dat;
-// }
-
 que* queue_init(void){
 
     que *queue = (que*)malloc(sizeof(que));

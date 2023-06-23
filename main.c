@@ -7,10 +7,21 @@
 #include <unistd.h>   // sleep
 #include "data.h"
 #include "func.h"
+#include "print.h"
+
+#include <string.h>
 
 extern int CAND_T[SIZE*DI];
 
 int main(void){
+
+    // ファイル処理
+    FILE *fp;
+    fp = fopen("data.md", "w");
+    if(fp == NULL){
+        fprintf(stderr, "file open error.\n");
+        exit(1);
+    }
 
     // 探索開始
     printf("search start!\n");
@@ -60,7 +71,7 @@ int main(void){
                 // ノードを作る条件をここに書き込む
                 if(
                     judge_ptr->cand_len >= 2 &&
-                    node_ptr->depth < 2
+                    node_ptr->depth < 1
                 ){
 
                     new = node_create(
@@ -85,11 +96,16 @@ int main(void){
         }
     }
 
-    // 探索木の出力
-    // tree_print(root);
-
-
+    // 時間計測
     double clock_2 = clock();
+
+
+    // 探索木の出力
+    tree_print(root);
+    // tree_file(root, fp);
+    char str[256] = "test";
+    fputs(str, fp);
+
 
     printf("Processing time = %.4lf sec.\n", (clock_2-clock_1)/1000000);
 
@@ -131,6 +147,9 @@ int main(void){
 
     // 探索木のメモリ解放
     tree_clear(root);
+
+    // ファイル処理
+    fclose(fp);
 
     return 0;
 }

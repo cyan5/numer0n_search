@@ -6,11 +6,6 @@
 
 #include "symbol.h"
 
-typedef struct data{
-    struct node_t *ptr;
-    struct data *next;
-}data;
-
 typedef struct que{
     int len;
     int push_count;
@@ -26,7 +21,10 @@ typedef struct stk{
     struct data *head;
 }stk;
 
-// data* data_init(node_t *ptr);
+typedef struct data{
+    struct node_t *ptr;
+    struct data *next;
+}data;
 
 que* queue_init(void);
 void queue_push(que *queue, node_t *ptr);
