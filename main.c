@@ -94,50 +94,12 @@ int main(void){
     // 時間計測
     double clock_2 = clock();
 
-
     // 探索木の出力
     tree_fprint(fp, root); 
-    
-    // improve log
-    // d = 2  d = 3   d = 4   memo
-    // 11308  Killed  Killed  init
-    // 11123  Killed  Killed  解答を絞り込めない質問を枝刈り
-
 
     printf("Processing time = %.4lf sec.\n", (clock_2-clock_1)/1000000);
 
     stack_print(stack);
-    
-
-    // 入力
-    // printf("print evaluate value ? y:1 n:0 > ");
-    // scanf("%d", &flag_printeval);
-
-    printf("Game Start!\n");
-
-    // ループ回数だけゲームをプレイ
-    // for(i=0; i<SIZE; i++){
-
-    //     // ゲーム回数を表示
-    //     printf("--< Game %d >--\n", i+1);
-
-    //     // ゲームiで使用する答え
-    //     set_answer[0] = CAND_T[i][0];
-    //     set_answer[1] = CAND_T[i][1];
-    //     set_answer[2] = CAND_T[i][2];
-
-    //     // 3 EAT するまでループ
-    //     // while(1){
-    //     for(j=0; j<0; j++){
-
-    //         eat = 0;
-    //         bite = 0;
-
-    //         // コールの決定
-    //         // call_tree
-    //     }
-    // }
-
 
     // 探索木のメモリ解放
     node_clear(root);

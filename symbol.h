@@ -22,24 +22,20 @@ typedef struct node_t{
     int call_lst[SIZE*DI];   // 質問候補リスト
     double score;            // 評価値
     double var;              // 評価値の分散
-    struct node_t *next;     //
     int judge_len;           //
     struct judge_t *head;    //
     struct judge_t *tail;    //
+    struct node_t *next;     // 隣のノードへのポインタ
 }node_t;
 
 typedef struct judge_t{
     int judge;               //
-    struct judge_t *next;    //
     int cand_len;            // 解答候補長さ
     int cand_lst[SIZE*DI];   // 解答候補リスト
     struct node_t *head;     //
     struct node_t *tail;     //
+    struct judge_t *next;    // 隣のノードへのポインタ
 }judge_t;
-
-typedef struct size_d{
-    int data[SIZE*DI];
-}size_d;
 
 enum type {
     DV,   // 全てを区別する。notを返す
