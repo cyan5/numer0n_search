@@ -48,14 +48,20 @@ int main(void){
 
         // node_ptr = stack_pop(stack);
         node_ptr = queue_pop(queue);
-        node_print(node_ptr);
+        // node_print(node_ptr);
+        queue_print(queue);
+        // breakpoint();
 
         judge_ptr = node_ptr->head;
         while(judge_ptr != NULL){
 
             for(int j=0; j<node_ptr->call_len; j++){
 
-                if(judge_ptr->cand_len >= 2){
+                // ノードを作る条件をここに書き込む
+                if(
+                    judge_ptr->cand_len >= 2 &&
+                    node_ptr->depth < 2
+                ){
 
                     new = node_create(
                         node_ptr->depth+1, 
@@ -69,6 +75,8 @@ int main(void){
                     // stack_push(stack, new);
                     // stack_print(stack);
                     queue_push(queue, new);
+                    // node_print(new);
+                    // breakpoint();
                     // queue_print(queue);
 
                 }

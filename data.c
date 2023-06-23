@@ -6,19 +6,32 @@
 #include "symbol.h"
 #include "data.h"
 
+// data* data_init(node_t *ptr){
+
+//     data *dat = (data*)malloc(sizeof(data));
+//     if(dat == NULL){
+//         fprintf(stderr, "memoly allocation error.\n");
+//         exit(1);
+//     }
+//     dat->ptr = ptr;
+//     dat->next = NULL;
+
+//     return dat;
+// }
+
 que* queue_init(void){
 
-    que *new = (que*)malloc(sizeof(que));
-    if(new == NULL){
+    que *queue = (que*)malloc(sizeof(que));
+    if(queue == NULL){
         fprintf(stderr, "memoly allocation error.\n");
         exit(1);
     }
-    new->len = 0;
-    new->push_count = 0;
-    new->pop_count = 0;
-    new->head = NULL;
-    new->tail = NULL;
-    return new;
+    queue->len = 0;
+    queue->push_count = 0;
+    queue->pop_count = 0;
+    queue->head = NULL;
+    queue->tail = NULL;
+    return queue;
 }
 
 void queue_push(que *queue, node_t *ptr){
@@ -34,7 +47,7 @@ void queue_push(que *queue, node_t *ptr){
     if(queue->head == NULL){
         queue->head = dat;
     }else{
-        queue->head->next = dat;
+        queue->tail->next = dat;
     }
     queue->tail = dat;
     queue->len++;
@@ -63,17 +76,18 @@ node_t* queue_pop(que *queue){
 }
 
 void queue_print(que *queue){
-    printf("len  : %d\n", queue->len);
-    printf("push : %d\n", queue->push_count);
-    printf("pop  : %d\n", queue->pop_count);
-}
+    printf("len  : %d, push : %d, pop  : %d\n", 
+        queue->len, 
+        queue->push_count, 
+        queue->pop_count);
+    }
 
 void queue_clear(que *queue){
-    data *ptr = queue->head, *tmp;
-    while(ptr != NULL){
-        tmp = ptr->next;
-        free(ptr);
-        ptr = tmp;
+    data *tmp1 = queue->head, *tmp2;
+    while(tmp1 != NULL){
+        tmp2 = tmp1->next;
+        free(tmp1);
+        tmp1 = tmp2;
     }
     free(queue);
 }
@@ -135,11 +149,11 @@ void stack_print(stk *stack){
 }
 
 void stack_clear(stk *stack){
-    data *ptr = stack->head, *tmp;
-    while(ptr != NULL){
-        tmp = ptr->next;
-        free(ptr);
-        ptr = tmp;
+    data *tmp1 = stack->head, *tmp2;
+    while(tmp1 != NULL){
+        tmp2 = tmp1->next;
+        free(tmp1);
+        tmp1 = tmp2;
     }
     free(stack);
 }
