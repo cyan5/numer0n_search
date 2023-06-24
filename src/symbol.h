@@ -4,8 +4,6 @@
 #ifndef SYMBOL
 #define SYMBOL
 
-#define QUEUE
-#define STACK
 #define USENUM 10  // 使用する数字の数
 #define DI 3       // 桁数
 #define SIZE 720   // 初期の候補数 C(USENUM, DI)

@@ -1,33 +1,49 @@
-.PHONY: all
-all: obj/main.o obj/func.o obj/call.o obj/cand.o obj/data.o obj/print.o obj/debug.o
-	gcc -Wall -O2 obj/*.o
+TARGET   = ./a.out
 
-obj/main.o: main.c
-	gcc -Wall -O2 -c -o obj/main.o main.c
-obj/func.o: func.c
-	gcc -Wall -O2 -c -o obj/func.o func.c
-obj/call.o: call.c
-	gcc -Wall -O2 -c -o obj/call.o call.c
-obj/cand.o: cand.c
-	gcc -Wall -O2 -c -o obj/cand.o cand.c
-obj/data.o: data.c
-	gcc -Wall -O2 -c -o obj/data.o data.c
-obj/print.o: print.c
-	gcc -Wall -O2 -c -o obj/print.o print.c
-obj/debug.o: debug.c
-	gcc -Wall -O2 -c -o obj/debug.o debug.c
+SRCDIR   = src
+OUTDIR   = out
+
+BINDIR   = $(OUTDIR)/bin
+OBJDIR   = $(OUTDIR)/obj
+DEPDIR   = $(OUTDIR)/dep
+
+CFLAGS   = -Wall -O2
+DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
+
+SRCS     = $(wildcard $(SRCDIR)/*.c)
+OBJS     = $(addprefix $(OBJDIR)/, $(notdir $(SRCS:.c=.o)))
+DEPS     = $(addprefix $(DEPDIR)/, $(notdir $(SRCS:.c=.d)))
+
+$(BINDIR)/$(TARGET): $(OBJS) | $(BINDIR)
+	$(CC) $(CFLAGS) -o $@ $^
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.c $(DEPDIR)/%.d | $(OBJDIR) $(DEPDIR)
+	$(CC) $(DEPFLAGS) $(CFLAGS) -c -o $@ $<
+
+# The empty rule is required to handle the case where the dependency file is deleted.
+$(DEPS):
+
+include $(wildcard $(DEPS))
+
+$(BINDIR):
+	@mkdir -p $@
+$(OBJDIR):
+	@mkdir -p $@
+$(DEPDIR):
+	@mkdir -p $@
+
+.PHONY: all
+all: $(TARGET)
 
 .PHONY: clean
 clean:
-	rm -f ./a.out obj/*.o data.md
+	rm -rf $(TARGET) data.md $(OUTDIR)
 	@echo clean completed.
 
-# depends header
+.PHONY: out
+out:
+	$(BINDIR)/$(TARGET)
 
-main.o: symbol.h func.h data.h
-func.o: symbol.h func.h call.h
-call.o: symbol.h call.h
-data.o: symbol.h data.h
-cand.o: symbol.h
-print.o: symbol.h
-debug.o: symbol.h
+.PHONY: test
+test:
+	@echo $(DEPS)
