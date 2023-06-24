@@ -43,7 +43,3 @@ clean:
 .PHONY: out
 out:
 	$(BINDIR)/$(TARGET)
-
-.PHONY: test
-test:
-	@echo $(DEPS)

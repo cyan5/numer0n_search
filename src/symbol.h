@@ -4,11 +4,11 @@
 #ifndef SYMBOL
 #define SYMBOL
 
-#define USENUM 10  // 使用する数字の数
-#define DI 3       // 桁数
-#define SIZE 720   // 初期の候補数 C(USENUM, DI)
-#define SECOND 252 // 2回目の候補数の最大値
-#define HIST 10    // 質問記録数
+#define USENUM  10  // 使用する数字の数
+#define DI       3  // 桁数
+#define SIZE   720  // 初期の候補数 C(USENUM, DI)
+#define SECOND 252  // 2回目の候補数の最大値
+#define HIST    10  // 質問記録数
 
 typedef struct node_t{
     int depth;               // 質問の回数
@@ -29,7 +29,7 @@ typedef struct node_t{
 typedef struct judge_t{
     int judge;               //
     int cand_len;            // 解答候補長さ
-    int cand_lst[SIZE*DI];   // 解答候補リスト
+    int cand_lst[SECOND*DI];   // 解答候補リスト
     struct node_t *head;     //
     struct node_t *tail;     //
     struct judge_t *next;    // 隣のノードへのポインタ
