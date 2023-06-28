@@ -14,7 +14,8 @@ SRCS     = $(wildcard $(SRCDIR)/*.c)
 OBJS     = $(addprefix $(OBJDIR)/, $(notdir $(SRCS:.c=.o)))
 DEPS     = $(addprefix $(DEPDIR)/, $(notdir $(SRCS:.c=.d)))
 
-$(BINDIR)/$(TARGET): $(OBJS) | $(BINDIR)
+# $(BINDIR)/$(TARGET): $(OBJS) | $(BINDIR)
+$(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(DEPDIR)/%.d | $(OBJDIR) $(DEPDIR)
@@ -39,7 +40,3 @@ all: $(TARGET)
 clean:
 	rm -rf $(TARGET) data.md $(OUTDIR)
 	@echo clean completed.
-
-.PHONY: out
-out:
-	$(BINDIR)/$(TARGET)
