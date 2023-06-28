@@ -45,10 +45,6 @@ void node_push(node_t *ptr, judge_t *child);
 // ジャッジにノードをプッシュして木構造にする
 void judge_push(judge_t *ptr, node_t *child);
 
-// ノードに評価値をつける
-void node_eval(node_t *ptr, int depth);
-void judge_eval(judge_t *ptr, int depth);
-
 // // 探索木のメモリを解放する
 void node_clear(node_t *ptr);
 void branch_clear(judge_t *ptr);

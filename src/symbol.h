@@ -4,7 +4,7 @@
 #ifndef SYMBOL
 #define SYMBOL
 
-#define DEPTH    1  // 探索深さ
+#define DEPTH    2  // 探索深さ
 #define USENUM  10  // 使用する数字の数
 #define DI       3  // 桁数
 #define SIZE   720  // 初期の候補数 C(USENUM, DI)

@@ -8,6 +8,7 @@
 #include "data.h"
 #include "func.h"
 #include "print.h"
+#include "eval.h"
 
 extern int CAND_T[SIZE*DI];
 
@@ -88,7 +89,6 @@ int main(void){
                             stack_push(stack1, new);
 
                             // 評価値スタックへ送る
-                            printf("%d, %d\n", node_ptr->depth, i);
                             if(node_ptr->depth == i){
                                 stack_push(stack2, new);
                             }
