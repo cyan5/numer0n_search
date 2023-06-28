@@ -4,6 +4,7 @@
 #ifndef SYMBOL
 #define SYMBOL
 
+#define DEPTH    1  // 探索深さ
 #define USENUM  10  // 使用する数字の数
 #define DI       3  // 桁数
 #define SIZE   720  // 初期の候補数 C(USENUM, DI)
@@ -28,12 +29,19 @@ typedef struct node_t{
 
 typedef struct judge_t{
     int judge;               //
+    double score;
+    double var;
     int cand_len;            // 解答候補長さ
-    int cand_lst[SECOND*DI];   // 解答候補リスト
+    int cand_lst[SECOND*DI]; // 解答候補リスト
     struct node_t *head;     //
     struct node_t *tail;     //
     struct judge_t *next;    // 隣のノードへのポインタ
 }judge_t;
+
+typedef struct num_t{
+    int data[DI];
+    struct num_t *next;
+}num_t;
 
 enum type {
     DV,   // 全てを区別する。notを返す

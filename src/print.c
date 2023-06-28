@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "print.h"
+#include "float.h"
 
 void node_print(node_t *ptr){
     printf("depth   \t= %d\n", ptr->depth);
@@ -45,11 +46,12 @@ void tree_print(node_t *ptr){
     for(int i=0; i<ptr->depth*2; i++){
         printf("    ");
     }
-    printf("%d%d%d (%d)\n", 
+    printf("%d%d%d (%d) %lf\n", 
         ptr->call_hist[ptr->depth*DI], 
         ptr->call_hist[ptr->depth*DI+1], 
         ptr->call_hist[ptr->depth*DI+2], 
-        ptr->judge_len);
+        ptr->judge_len, 
+        ptr->score);
 
     judge_t *tmp = ptr->head;
     while(tmp != NULL){
@@ -64,7 +66,13 @@ void branch_print(judge_t *ptr, int depth){
         printf("    ");
     }
     judge_print(ptr->judge);
-    printf(" (%d)\n", ptr->cand_len);
+    if(ptr->score == -1){
+        printf(" (%d)\n", ptr->cand_len);
+    }else if(ptr->score == DBL_MAX){
+        printf(" (%d) inf\n", ptr->cand_len);
+    }else{
+        printf(" (%d) %lf\n", ptr->cand_len, ptr->score);
+    }
 
     node_t *tmp = ptr->head;
     while(tmp != NULL){
@@ -106,11 +114,12 @@ void tree_fprint(FILE *fp, node_t *ptr){
         fprintf(fp, "    ");
     }
     fprintf(fp, "* ");
-    fprintf(fp, "%d%d%d (%d)\n", 
+    fprintf(fp, "%d%d%d (%d) %lf\n", 
         ptr->call_hist[ptr->depth*DI], 
         ptr->call_hist[ptr->depth*DI+1], 
         ptr->call_hist[ptr->depth*DI+2], 
-        ptr->judge_len);
+        ptr->judge_len, 
+        ptr->score);
 
     judge_t *tmp = ptr->head;
     while(tmp != NULL){
@@ -126,7 +135,13 @@ void branch_fprint(FILE *fp, judge_t *ptr, int depth){
     }
     fprintf(fp, "* ");
     judge_fprint(fp, ptr->judge);
-    fprintf(fp, " (%d)\n", ptr->cand_len);
+    if(ptr->score == -1){
+        fprintf(fp, " (%d)\n", ptr->cand_len);
+    }else if(ptr->score == DBL_MAX){
+        fprintf(fp, " (%d) inf\n", ptr->cand_len);
+    }else{
+        fprintf(fp, " (%d) %lf\n", ptr->cand_len, ptr->score);
+    }
 
     node_t *tmp = ptr->head;
     while(tmp != NULL){

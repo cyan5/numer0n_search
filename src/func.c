@@ -3,8 +3,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <float.h>
 #include "func.h"
 #include "call.h"
+
+#define SQ(x) ((x)*(x))
 
 extern int CAND_T[SIZE*DI];
 
@@ -49,38 +52,7 @@ node_t* node_create(
     node_setcall(ptr);
 
     // ジャッジリストを作成
-    int judge, flag = 1;
-    judge_t *tmp, *new;
-
-    // ジャッジが既に存在するか探索
-    for(int i=0; i<cand_len; i++){
-
-        tmp = ptr->head;
-        judge = node_setjudge(call, &cand_lst[i*DI]);
-
-        flag = 1;
-        while(tmp != NULL){
-
-            // 見つかったとき
-            if(tmp->judge == judge){
-                flag = 0;
-                for(int j=0; j<DI; j++){
-                    tmp->cand_lst[tmp->cand_len*DI+j] = cand_lst[i*DI+j];
-                }
-                tmp->cand_len++;
-                break;
-            }else{
-                tmp = tmp->next;
-            }
-        }
-
-        // 見つからなかったとき
-        if(flag){
-            ptr->judge_len++;
-            new = judge_create(judge, &cand_lst[i*DI]);
-            node_push(ptr, new);
-        }
-    }
+    node_judgelst(ptr);
 
     return ptr;
 }
@@ -129,6 +101,43 @@ void node_setcall(node_t *ptr){
 
     ptr->call_len = idx;
     hash_clear(&h_lst);
+}
+
+// ジャッジリストを作成
+void node_judgelst(node_t *ptr){
+
+    int judge, flag = 1;
+    judge_t *tmp, *new;
+
+    // ジャッジが既に存在するか探索
+    for(int i=0; i<ptr->cand_len; i++){
+
+        tmp = ptr->head;
+        judge = node_setjudge(&ptr->call_hist[ptr->depth*DI], &ptr->cand_lst[i*DI]);
+
+        flag = 1;
+        while(tmp != NULL){
+
+            // 見つかったとき
+            if(tmp->judge == judge){
+                flag = 0;
+                for(int j=0; j<DI; j++){
+                    tmp->cand_lst[tmp->cand_len*DI+j] = ptr->cand_lst[i*DI+j];
+                }
+                tmp->cand_len++;
+                break;
+            }else{
+                tmp = tmp->next;
+            }
+        }
+
+        // 見つからなかったとき
+        if(flag){
+            ptr->judge_len++;
+            new = judge_create(judge, &ptr->cand_lst[i*DI]);
+            node_push(ptr, new);
+        }
+    }
 }
 
 int node_setjudge(int call[3], int cand[3]){
@@ -195,8 +204,6 @@ int judge_enum(int eat, int bite){
     return score;
 }
 
-// ジャッジリスト作成関数をここにつくる
-
 judge_t* judge_create(int judge, int cand[DI]){
 
     // メモリの動的確保
@@ -214,6 +221,8 @@ judge_t* judge_create(int judge, int cand[DI]){
 
     // 固定データの格納
     new->next = NULL;
+    new->score = -1;
+    new->var = -1;
     new->cand_len = 1;
     new->head = NULL;
     new->tail = NULL;
@@ -239,6 +248,50 @@ void judge_push(judge_t *ptr, node_t *child){
         ptr->tail->next = child;
     }
     ptr->tail = child;
+}
+
+void node_eval(node_t *ptr, int depth){
+
+    judge_t *tmp = ptr->head;
+    double sum = 0;
+
+    while(tmp != NULL){
+
+        if(depth == 1){
+            sum += SQ(tmp->cand_len);
+        }else{
+            judge_eval(tmp, depth);
+            sum += SQ(tmp->score);
+        }
+
+        tmp = tmp->next;
+    }
+
+    ptr->score = 1 + sum / ptr->cand_len;
+}
+
+void judge_eval(judge_t *ptr, int depth){
+
+    node_t *tmp = ptr->head;
+    double min = DBL_MAX;
+
+    if(ptr->judge == J3_0){
+        ptr->score = 0;
+    }else if(ptr->cand_len == 1){
+        ptr->score = 1;
+    }else if(ptr->cand_len == 2){
+        ptr->score = 1.5;
+    }else{
+        while(tmp != NULL){
+            node_eval(tmp, depth-1);
+            if(tmp->score < min){
+                min = tmp->score;
+            }
+            tmp = tmp->next;
+        }
+
+        ptr->score = min;
+    }
 }
 
 void node_clear(node_t *ptr){

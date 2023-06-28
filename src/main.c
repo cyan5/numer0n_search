@@ -9,8 +9,6 @@
 #include "func.h"
 #include "print.h"
 
-#include <string.h>
-
 extern int CAND_T[SIZE*DI];
 
 int main(void){
@@ -29,7 +27,8 @@ int main(void){
     double clock_1 = clock();
 
     // スタックorキューを生成
-    stk *stack = stack_init();
+    stk *stack1 = stack_init();
+    stk *stack2 = stack_init();
 
     // ルートノードを生成
     int call[DI];
@@ -46,64 +45,89 @@ int main(void){
         CAND_T);     // cand_lst
 
     // ルートをスタックorキューにプッシュ
-    stack_push(stack, root);
+    stack_push(stack1, root);
 
     // 探索
     node_t *node_ptr, *new;
     judge_t *judge_ptr;
-    // for(int i=0; i<6; i++){
-    while(stack->head != NULL){
 
-        node_ptr = stack_pop(stack);
-        stack_print(stack);
+    for(int i=0; i<HIST; i++){
 
-        judge_ptr = node_ptr->head;
-        while(judge_ptr != NULL){
+        // 探索木を作る
+        while(stack1->head != NULL){
 
-            for(int j=0; j<node_ptr->call_len; j++){
+            node_ptr = stack_pop(stack1);
+            stack_print(stack1);
 
-                // ノードを作らない条件をここに書き込む
-                if(judge_ptr->cand_len <= 2){
-                    // check();
-                }else if(node_ptr->depth >= 2){
-                    // check();
-                }else{  // ノードを作成
+            judge_ptr = node_ptr->head;
+            while(judge_ptr != NULL){
 
-                    new = node_create(
-                        node_ptr->depth+1, 
-                        &node_ptr->call_lst[j*DI], 
-                        node_ptr->call_hist, 
-                        node_ptr->type, 
-                        judge_ptr->cand_len, 
-                        judge_ptr->cand_lst);
+                for(int j=0; j<node_ptr->call_len; j++){
 
-                    // ノードをプッシュしない条件
-                    if(node_ptr->cand_len == new->cand_len){
-                        node_clear(new);
+                    // ノードを作らない条件をここに書き込む
+                    if(judge_ptr->cand_len <= 2){
                         // check();
-                    }else{
-                        judge_push(judge_ptr, new);
-                        stack_push(stack, new);
+                    }else if(node_ptr->depth >= DEPTH){
+                        // check();
+                    }else{  // ノードを作成
+
+                        new = node_create(
+                            node_ptr->depth+1, 
+                            &node_ptr->call_lst[j*DI], 
+                            node_ptr->call_hist, 
+                            node_ptr->type, 
+                            judge_ptr->cand_len, 
+                            judge_ptr->cand_lst);
+
+                        // ノードをプッシュしない条件
+                        if(node_ptr->cand_len == new->cand_len){
+                            node_clear(new);
+                            // check();
+                        }else{
+                            judge_push(judge_ptr, new);
+                            stack_push(stack1, new);
+
+                            // 評価値スタックへ送る
+                            printf("%d, %d\n", node_ptr->depth, i);
+                            if(node_ptr->depth == i){
+                                stack_push(stack2, new);
+                            }
+                        }
                     }
                 }
+                judge_ptr = judge_ptr->next;
             }
-            judge_ptr = judge_ptr->next;
         }
+
+        // 探索木に評価値をつける
+        while(stack2->head != NULL){
+
+            node_ptr = stack_pop(stack2);
+            node_eval(node_ptr, DEPTH);
+        }
+
+        // 枝刈りをする
+        // WIP
+
+        // 再び探索木を作る
+        // WIP
     }
 
     // 時間計測
     double clock_2 = clock();
 
     // 探索木の出力
-    tree_fprint(fp, root); 
+    tree_print(root);
+    tree_fprint(fp, root);
 
     printf("Processing time = %.4lf sec.\n", (clock_2-clock_1)/1000000);
 
-    stack_print(stack);
+    stack_print(stack1);
 
     // 探索木のメモリ解放
     node_clear(root);
-    stack_clear(stack);
+    stack_clear(stack1);
+    stack_clear(stack2);
 
     // ファイル処理
     fclose(fp);

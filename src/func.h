@@ -25,6 +25,9 @@ int node_settype(int call[DI], int depth, int call_hist[HIST*DI], int parent_typ
 // 次の質問を格納すう
 void node_setcall(node_t *ptr);
 
+// ジャッジリストを作成
+void node_judgelst(node_t *ptr);
+
 // 質問と解答のペアをジャッジする
 int node_setjudge(int call[3], int cand[3]);
 
@@ -41,6 +44,10 @@ void node_push(node_t *ptr, judge_t *child);
 
 // ジャッジにノードをプッシュして木構造にする
 void judge_push(judge_t *ptr, node_t *child);
+
+// ノードに評価値をつける
+void node_eval(node_t *ptr, int depth);
+void judge_eval(judge_t *ptr, int depth);
 
 // // 探索木のメモリを解放する
 void node_clear(node_t *ptr);
