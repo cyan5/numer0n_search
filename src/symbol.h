@@ -32,16 +32,18 @@ typedef struct judge_t{
     double score;
     double var;
     int cand_len;            // 解答候補長さ
+    struct num_t *cand_lst_tail;
+    struct num_t *cand_lst_head;
     int cand_lst[SECOND*DI]; // 解答候補リスト
     struct node_t *head;     //
     struct node_t *tail;     //
     struct judge_t *next;    // 隣のノードへのポインタ
 }judge_t;
 
-// typedef struct num_t{
-//     int data[DI];
-//     struct num_t *next;
-// }num_t;
+typedef struct num_t{
+    int data[DI];
+    struct num_t *next;
+}num_t;
 
 enum type {
     DV,   // 全てを区別する。notを返す

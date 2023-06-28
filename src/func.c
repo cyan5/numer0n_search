@@ -267,3 +267,39 @@ void branch_clear(judge_t *ptr){
     }
     free(ptr);
 }
+
+num_t* num_init(int num[DI]){
+
+    num_t *ptr = (num_t*)malloc(sizeof(num_t));
+    if(ptr == NULL){
+        fprintf(stderr, "memoly allocation error.\n");
+        exit(1);
+    }
+
+    for(int i=0; i<DI; i++){
+        ptr->data[i] = num[i];
+    }
+    ptr->next = NULL;
+
+    return ptr;
+}
+
+void num_push(num_t *head, num_t *tail, num_t *ptr){
+
+    if(head == NULL){
+        head = ptr;
+    }else{
+        tail->next = ptr;
+    }
+    tail = ptr;
+}
+
+num_t* num_pop(num_t *head, num_t *tail){
+
+    num_t *ptr = head;
+    head = head->next;
+    if(head == NULL){
+        tail = NULL;
+    }
+    return ptr;
+}
