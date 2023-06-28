@@ -28,8 +28,9 @@ int main(void){
     double clock_1 = clock();
 
     // スタックorキューを生成
-    stk *stack1 = stack_init();
-    stk *stack2 = stack_init();
+    stk *stack_search_now = stack_init();
+    stk *stack_search_next;
+    stk *stack_eval = stack_init();
 
     // ルートノードを生成
     int call[DI];
@@ -46,20 +47,25 @@ int main(void){
         CAND_T);     // cand_lst
 
     // ルートをスタックorキューにプッシュ
-    stack_push(stack1, root);
+    stack_push(stack_search_now, root);
 
     // 探索
     node_t *node_ptr, *new;
     judge_t *judge_ptr;
 
-    for(int i=0; i<HIST; i++){
+    // 質問回数
+    // for(int i=0; i<HIST; i++){
+    for(int i=0; i<1; i++){
 
         // 探索木を作る
-        while(stack1->head != NULL){
+        stack_search_next = stack_init();
+        while(stack_search_now->head != NULL){
 
-            node_ptr = stack_pop(stack1);
-            stack_print(stack1);
+            // ポップ
+            node_ptr = stack_pop(stack_search_now);
+            stack_print(stack_search_now);
 
+            // ジャッジポインタを作成
             judge_ptr = node_ptr->head;
             while(judge_ptr != NULL){
 
@@ -68,7 +74,7 @@ int main(void){
                     // ノードを作らない条件をここに書き込む
                     if(judge_ptr->cand_len <= 2){
                         // check();
-                    }else if(node_ptr->depth >= DEPTH){
+                    }else if(node_ptr->depth >= i+DEPTH){
                         // check();
                     }else{  // ノードを作成
 
@@ -85,32 +91,62 @@ int main(void){
                             node_clear(new);
                             // check();
                         }else{
+                            // ジャッジにプッシュ
                             judge_push(judge_ptr, new);
-                            stack_push(stack1, new);
+                            // キューにプッシュ
+                            stack_push(stack_search_now, new);
+                            // // 次の探索キューにプッシュ
+                            // printf("check %d == %d\n", new->depth, i+1);
+                            // if(new->depth == i+1){
+                            //     stack_push(stack_search_next, new);
+                            // }
 
                             // 評価値スタックへ送る
-                            if(node_ptr->depth == i){
-                                stack_push(stack2, new);
-                            }
+                            // if(node_ptr->depth == i){
+                            //     stack_push(stack_eval, new);
+                            // }
                         }
                     }
                 }
                 judge_ptr = judge_ptr->next;
             }
+
+            // 評価値スタックorキューにプッシュ
+            // printf("%d, %d\n", node_ptr->depth, i);
+            if(node_ptr->depth == i){
+                stack_push(stack_eval, node_ptr);
+            }
+
+            // 次の探索キューにプッシュ
+            // printf("check %d == %d\n", new->depth, i+1);
+            if(node_ptr->depth == i+1){
+                stack_push(stack_search_next, node_ptr);
+            }
         }
 
         // 探索木に評価値をつける
-        while(stack2->head != NULL){
+        while(stack_eval->head != NULL){
 
-            node_ptr = stack_pop(stack2);
+            node_ptr = stack_pop(stack_eval);
             node_eval(node_ptr, DEPTH);
         }
+
+        // 並べ替え & 候補
 
         // 枝刈りをする
         // WIP
 
         // 再び探索木を作る
-        // WIP
+        stack_search_next->push_count = stack_search_now->push_count;
+        stack_search_next->pop_count = stack_search_now->pop_count;
+
+        if(stack_search_now->len != 0){
+            printf("debug stacklen noteq 0: %d\n", stack_search_now->len);
+            exit(1);
+        }
+        free(stack_search_now);
+        stack_search_now = stack_search_next;
+        printf("%d\n", stack_search_now->len);
     }
 
     // 時間計測
@@ -122,12 +158,12 @@ int main(void){
 
     printf("Processing time = %.4lf sec.\n", (clock_2-clock_1)/1000000);
 
-    stack_print(stack1);
+    stack_print(stack_search_now);
 
     // 探索木のメモリ解放
     node_clear(root);
-    stack_clear(stack1);
-    stack_clear(stack2);
+    stack_clear(stack_search_now);
+    stack_clear(stack_eval);
 
     // ファイル処理
     fclose(fp);

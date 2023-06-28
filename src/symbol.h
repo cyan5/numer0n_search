@@ -38,10 +38,10 @@ typedef struct judge_t{
     struct judge_t *next;    // 隣のノードへのポインタ
 }judge_t;
 
-typedef struct num_t{
-    int data[DI];
-    struct num_t *next;
-}num_t;
+// typedef struct num_t{
+//     int data[DI];
+//     struct num_t *next;
+// }num_t;
 
 enum type {
     DV,   // 全てを区別する。notを返す

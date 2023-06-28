@@ -73,6 +73,8 @@ void queue_clear(que *queue){
     data *tmp1 = queue->head, *tmp2;
     while(tmp1 != NULL){
         tmp2 = tmp1->next;
+        // node_t型
+        free(tmp1->ptr);
         free(tmp1);
         tmp1 = tmp2;
     }
@@ -139,6 +141,8 @@ void stack_clear(stk *stack){
     data *tmp1 = stack->head, *tmp2;
     while(tmp1 != NULL){
         tmp2 = tmp1->next;
+        // node_t型
+        // free(tmp1->ptr);
         free(tmp1);
         tmp1 = tmp2;
     }

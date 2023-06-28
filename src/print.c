@@ -67,7 +67,7 @@ void branch_print(judge_t *ptr, int depth){
     }
     judge_print(ptr->judge);
     if(ptr->score == -1){
-        printf(" (%d)\n", ptr->cand_len);
+        printf(" (%d) -1\n", ptr->cand_len);
     }else if(ptr->score == DBL_MAX){
         printf(" (%d) inf\n", ptr->cand_len);
     }else{
@@ -136,7 +136,7 @@ void branch_fprint(FILE *fp, judge_t *ptr, int depth){
     fprintf(fp, "* ");
     judge_fprint(fp, ptr->judge);
     if(ptr->score == -1){
-        fprintf(fp, " (%d)\n", ptr->cand_len);
+        fprintf(fp, " (%d) -1\n", ptr->cand_len);
     }else if(ptr->score == DBL_MAX){
         fprintf(fp, " (%d) inf\n", ptr->cand_len);
     }else{
