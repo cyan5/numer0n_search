@@ -34,7 +34,7 @@ typedef struct judge_t{
     int cand_len;            // 解答候補長さ
     struct num_t *cand_lst_tail;
     struct num_t *cand_lst_head;
-    int cand_lst[SECOND*DI]; // 解答候補リスト
+    // int cand_lst[SECOND*DI]; // 解答候補リスト
     struct node_t *head;     //
     struct node_t *tail;     //
     struct judge_t *next;    // 隣のノードへのポインタ

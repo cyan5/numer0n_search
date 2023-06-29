@@ -37,6 +37,14 @@ int main(void){
     for(int i=0; i<DI; i++){
         call[i] = i;
     }
+    num_t *head = NULL, *tail = NULL, *num_ptr;
+    for(int i=0; i<SIZE; i++){
+        num_ptr = num_init(&CAND_T[i*DI]);
+        num_push(&head, &tail, num_ptr);
+    }
+    // if(head == NULL){
+    //     check();
+    // }
     int call_hist[HIST*DI];
     node_t *root = node_create(
         0,           // depth
@@ -44,7 +52,8 @@ int main(void){
         call_hist,   // call_hist
         NU,          // parent type
         SIZE,        // cand_len
-        CAND_T);     // cand_lst
+        head, 
+        tail);     // cand_lst
 
     // ルートをスタックorキューにプッシュ
     stack_push(stack_search_now, root);
@@ -84,7 +93,10 @@ int main(void){
                             node_ptr->call_hist, 
                             node_ptr->type, 
                             judge_ptr->cand_len, 
-                            judge_ptr->cand_lst);
+                            // judge_ptr->cand_lst
+                            judge_ptr->cand_lst_head, 
+                            judge_ptr->cand_lst_tail
+                            );
 
                         // ノードをプッシュしない条件
                         if(node_ptr->cand_len == new->cand_len){
@@ -146,7 +158,7 @@ int main(void){
         }
         free(stack_search_now);
         stack_search_now = stack_search_next;
-        printf("%d\n", stack_search_now->len);
+        // printf("%d\n", stack_search_now->len);
     }
 
     // 時間計測

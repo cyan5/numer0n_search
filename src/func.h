@@ -16,7 +16,9 @@ node_t* node_create(
     int call_hist[HIST*DI], 
     int parent_type, 
     int cand_len, 
-    int cand_lst[SIZE*DI]
+    // int cand_lst[SIZE*DI]
+    num_t *head, 
+    num_t *tail
 );
 
 // 質問、質問履歴のペアからタイプを決定する
@@ -47,7 +49,7 @@ void judge_push(judge_t *ptr, node_t *child);
 
 // num_t型単方向リストマネージャ
 num_t* num_init(int num[DI]);
-void num_push(num_t *head, num_t *tail, num_t *ptr);
+void num_push(num_t **head, num_t **tail, num_t *ptr);
 num_t* num_pop(num_t *head, num_t *tail);
 
 // // 探索木のメモリを解放する
