@@ -37,10 +37,13 @@ int main(void){
     for(int i=0; i<DI; i++){
         call[i] = i;
     }
-    num_t *head = NULL, *tail = NULL, *num_ptr;
+    lst_t *lst_ptr = lst_init();
+    // lst_ptr->len = SIZE;
+    num_t *num_ptr;
     for(int i=0; i<SIZE; i++){
         num_ptr = num_init(&CAND_T[i*DI]);
-        num_push(&head, &tail, num_ptr);
+        // num_push(&head, &tail, num_ptr);
+        num_push(lst_ptr, num_ptr);
     }
     // if(head == NULL){
     //     check();
@@ -51,9 +54,10 @@ int main(void){
         call,        // call
         call_hist,   // call_hist
         NU,          // parent type
-        SIZE,        // cand_len
-        head, 
-        tail);     // cand_lst
+        // SIZE,        // cand_len
+        // head, 
+        // tail);     // cand_lst
+        lst_ptr);     // cand_lst
 
     // ルートをスタックorキューにプッシュ
     stack_push(stack_search_now, root);
@@ -64,7 +68,7 @@ int main(void){
 
     // 質問回数
     // for(int i=0; i<HIST; i++){
-    for(int i=0; i<1; i++){
+    for(int i=0; i<TIMES; i++){
 
         // 探索木を作る
         stack_search_next = stack_init();
@@ -81,7 +85,7 @@ int main(void){
                 for(int j=0; j<node_ptr->call_len; j++){
 
                     // ノードを作らない条件をここに書き込む
-                    if(judge_ptr->cand_len <= 2){
+                    if(judge_ptr->cand_lst->len <= 2){
                         // check();
                     }else if(node_ptr->depth >= i+DEPTH){
                         // check();
@@ -92,10 +96,10 @@ int main(void){
                             &node_ptr->call_lst[j*DI], 
                             node_ptr->call_hist, 
                             node_ptr->type, 
-                            judge_ptr->cand_len, 
-                            // judge_ptr->cand_lst
-                            judge_ptr->cand_lst_head, 
-                            judge_ptr->cand_lst_tail
+                            // judge_ptr->cand_len, 
+                            judge_ptr->cand_lst
+                            // judge_ptr->cand_lst_head, 
+                            // judge_ptr->cand_lst_tail
                             );
 
                         // ノードをプッシュしない条件
@@ -141,6 +145,7 @@ int main(void){
 
             node_ptr = stack_pop(stack_eval);
             node_eval(node_ptr, DEPTH);
+            check();
         }
 
         // 並べ替え & 候補

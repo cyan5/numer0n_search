@@ -15,10 +15,11 @@ node_t* node_create(
     int call[DI], 
     int call_hist[HIST*DI], 
     int parent_type, 
-    int cand_len, 
     // int cand_lst[SIZE*DI]
-    num_t *head, 
-    num_t *tail
+    // int cand_len, 
+    // num_t *head, 
+    // num_t *tail
+    lst_t *cand_lst
 );
 
 // 質問、質問履歴のペアからタイプを決定する
@@ -47,10 +48,19 @@ void node_push(node_t *ptr, judge_t *child);
 // ジャッジにノードをプッシュして木構造にする
 void judge_push(judge_t *ptr, node_t *child);
 
-// num_t型単方向リストマネージャ
+// lst_t型マネージャ
+lst_t* lst_init(void);
+// num_t型リストマネージャ
 num_t* num_init(int num[DI]);
-void num_push(num_t **head, num_t **tail, num_t *ptr);
-num_t* num_pop(num_t *head, num_t *tail);
+
+
+// void num_push(num_t **head, num_t **tail, num_t *ptr);
+void num_push(lst_t *lst, num_t *num);
+
+// num_t* num_pop(num_t *head, num_t *tail);
+// num_t* num_pop(num_t *head, num_t *tail)
+
+void lst_clear(lst_t *ptr);
 
 // // 探索木のメモリを解放する
 void node_clear(node_t *ptr);

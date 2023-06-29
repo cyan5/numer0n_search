@@ -4,7 +4,8 @@
 #ifndef SYMBOL
 #define SYMBOL
 
-#define DEPTH    2  // 探索深さ
+#define TIMES    1  // 質問回数 < HIST
+#define DEPTH    2  // 探索深さ < HIST
 #define USENUM  10  // 使用する数字の数
 #define DI       3  // 桁数
 #define SIZE   720  // 初期の候補数 C(USENUM, DI)
@@ -31,14 +32,21 @@ typedef struct judge_t{
     int judge;               //
     double score;
     double var;
-    int cand_len;            // 解答候補長さ
-    struct num_t *cand_lst_tail;
-    struct num_t *cand_lst_head;
-    // int cand_lst[SECOND*DI]; // 解答候補リスト
+    // int cand_len;            // 解答候補長さ
+    // struct num_t *cand_lst_tail;
+    // struct num_t *cand_lst_head;
+    struct lst_t *cand_lst;
     struct node_t *head;     //
     struct node_t *tail;     //
     struct judge_t *next;    // 隣のノードへのポインタ
 }judge_t;
+
+typedef struct lst_t{
+    int len;
+    struct num_t *head;
+    struct num_t *tail;
+    struct lst_t *next;
+}lst_t;
 
 typedef struct num_t{
     int data[DI];

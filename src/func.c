@@ -13,10 +13,11 @@ node_t* node_create(
     int call[DI], 
     int call_hist[HIST*DI], 
     int parent_type, 
-    int cand_len, 
     // int cand_lst[SIZE*DI]
-    num_t *head, 
-    num_t *tail
+    // int cand_len, 
+    // num_t *head, 
+    // num_t *tail
+    lst_t *cand_lst
     ){
 
     // メモリの動的確保
@@ -35,14 +36,15 @@ node_t* node_create(
         ptr->call_hist[depth*DI+i] = call[i];
     }
     ptr->type = node_settype(call, depth, call_hist, parent_type);
-    ptr->cand_len = cand_len;
+    // ptr->cand_len = cand_len;
+    ptr->cand_len = cand_lst->len;
 
     // for(int i=0; i<cand_len*DI; i++){
     //     ptr->cand_lst[i] = cand_lst[i];
     // }
     ////////////
     int idx = 0;
-    num_t *num_ptr = head;
+    num_t *num_ptr = cand_lst->head;
     while(num_ptr != NULL){
         for(int i=0; i<DI; i++){
             ptr->cand_lst[idx++] = num_ptr->data[i];
@@ -141,9 +143,10 @@ void node_judgelst(node_t *ptr){
                 // }
                 /////////
                 num_ptr = num_init(&ptr->cand_lst[i*DI]);
-                num_push(&tmp->cand_lst_head, &tmp->cand_lst_tail, num_ptr);
+                num_push(tmp->cand_lst, num_ptr);
+                // num_push(&tmp->cand_lst_head, &tmp->cand_lst_tail, num_ptr);
                 ////////
-                tmp->cand_len++;
+                // tmp->cand_lst->len++;
                 break;
             }else{
                 tmp = tmp->next;
@@ -235,24 +238,25 @@ judge_t* judge_create(int judge, int cand[DI]){
     // 引数データの格納
     new->judge = judge;
 
-
     // 固定データの格納
-    new->next = NULL;
     new->score = -1;
     new->var = -1;
-    new->cand_len = 1;
+    // new->cand_len = 1;
     new->head = NULL;
     new->tail = NULL;
+    new->next = NULL;
 
     ///////
-    new->cand_lst_head = NULL;
-    new->cand_lst_tail = NULL;
+    new->cand_lst = lst_init();
+    // new->cand_lst_head = NULL;
+    // new->cand_lst_tail = NULL;
 
     // for(int i=0; i<DI; i++){
     //     new->cand_lst[i] = cand[i];
     // }
     num_t *num_ptr = num_init(cand);
-    num_push(&new->cand_lst_head, &new->cand_lst_tail, num_ptr);
+    // num_push(&new->cand_lst_head, &new->cand_lst_tail, num_ptr);
+    num_push(new->cand_lst, num_ptr);
 
     return new;
 }
@@ -296,8 +300,26 @@ void branch_clear(judge_t *ptr){
         node_clear(tmp1);
         tmp1 = tmp2;
     }
+    lst_clear(ptr->cand_lst);
     free(ptr);
 }
+
+lst_t* lst_init(void){
+
+    lst_t *ptr = (lst_t*)malloc(sizeof(lst_t));
+    if(ptr == NULL){
+        fprintf(stderr, "memoly allocation error.\n");
+        exit(1);
+    }
+
+    ptr->len = 0;
+    ptr->head = NULL;
+    ptr->tail = NULL;
+    ptr->next = NULL;
+
+    return ptr;
+}
+
 
 num_t* num_init(int num[DI]){
 
@@ -315,14 +337,36 @@ num_t* num_init(int num[DI]){
     return ptr;
 }
 
-void num_push(num_t **head, num_t **tail, num_t *ptr){
+// void num_push(num_t **head, num_t **tail, num_t *ptr){
 
-    if(*head == NULL){
-        *head = ptr;
+//     if(*head == NULL){
+//         *head = ptr;
+//     }else{
+//         (*tail)->next = ptr;
+//     }
+//     *tail = ptr;
+// }
+
+void num_push(lst_t *lst, num_t *num){
+
+    lst->len++;
+    if(lst->head == NULL){
+        lst->head = num;
     }else{
-        (*tail)->next = ptr;
+        lst->tail->next = num;
     }
-    *tail = ptr;
+    lst->tail = num;
+}
+
+void lst_clear(lst_t *ptr){
+
+    num_t *tmp1 = ptr->head, *tmp2;
+    while(tmp1 != NULL){
+        tmp2 = tmp1->next;
+        free(tmp1);
+        tmp1 = tmp2;
+    }
+    free(ptr);
 }
 
 // num_t* num_pop(num_t *head, num_t *tail){

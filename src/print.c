@@ -42,7 +42,6 @@ void node_print(node_t *ptr){
 }
 
 void tree_print(node_t *ptr){
-
     for(int i=0; i<ptr->depth*2; i++){
         printf("    ");
     }
@@ -61,19 +60,20 @@ void tree_print(node_t *ptr){
 }
 
 void branch_print(judge_t *ptr, int depth){
-
     for(int i=0; i<depth*2+1; i++){
         printf("    ");
     }
     judge_print(ptr->judge);
     if(ptr->score == -1){
-        printf(" (%d) -1\n", ptr->cand_len);
+        // printf(" (%d) -1\n", ptr->cand_len);
+        printf(" (%d) -1\n", ptr->cand_lst->len);
     }else if(ptr->score == DBL_MAX){
-        printf(" (%d) inf\n", ptr->cand_len);
+        // printf(" (%d) inf\n", ptr->cand_len);
+        printf(" (%d) inf\n", ptr->cand_lst->len);
     }else{
-        printf(" (%d) %lf\n", ptr->cand_len, ptr->score);
+        // printf(" (%d) %lf\n", ptr->cand_len, ptr->score);
+        printf(" (%d) %lf\n", ptr->cand_lst->len, ptr->score);
     }
-
     node_t *tmp = ptr->head;
     while(tmp != NULL){
         tree_print(tmp);
@@ -136,11 +136,14 @@ void branch_fprint(FILE *fp, judge_t *ptr, int depth){
     fprintf(fp, "* ");
     judge_fprint(fp, ptr->judge);
     if(ptr->score == -1){
-        fprintf(fp, " (%d) -1\n", ptr->cand_len);
+        // fprintf(fp, " (%d) -1\n", ptr->cand_len);
+        fprintf(fp, " (%d) -1\n", ptr->cand_lst->len);
     }else if(ptr->score == DBL_MAX){
-        fprintf(fp, " (%d) inf\n", ptr->cand_len);
+        // fprintf(fp, " (%d) inf\n", ptr->cand_len);
+        fprintf(fp, " (%d) inf\n", ptr->cand_lst->len);
     }else{
-        fprintf(fp, " (%d) %lf\n", ptr->cand_len, ptr->score);
+        // fprintf(fp, " (%d) %lf\n", ptr->cand_len, ptr->score);
+        fprintf(fp, " (%d) %lf\n", ptr->cand_lst->len, ptr->score);
     }
 
     node_t *tmp = ptr->head;

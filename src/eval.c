@@ -21,12 +21,15 @@ void node_eval(node_t *ptr, int depth){
     double sum = 0;
 
     while(tmp != NULL){
-
         if(depth == 0){
-            sum += SQ(tmp->cand_len);
+            // sum += SQ(tmp->cand_len);
+            sum += SQ(tmp->cand_lst->len);
         }else{
+            // debug
+            // printf("check\n");
             judge_eval(tmp, depth);
-            sum += tmp->cand_len * tmp->score;
+            printf("judge finish\n");
+            sum += tmp->cand_lst->len * tmp->score;
         }
 
         tmp = tmp->next;
@@ -42,9 +45,10 @@ void judge_eval(judge_t *ptr, int depth){
 
     if(ptr->judge == J3_0){
         ptr->score = 0;
-    }else if(ptr->cand_len == 1){
+    }else if(ptr->cand_lst->len == 1){
+    // }else if(ptr->cand_len == 1){
         ptr->score = 1;
-    }else if(ptr->cand_len == 2){
+    }else if(ptr->cand_lst->len == 2){
         ptr->score = 1.5;
     }else{
 
@@ -65,9 +69,9 @@ void judge_eval(judge_t *ptr, int depth){
         //     ptr->score = DBL_MAX;
         // }
 
-
         while(tmp != NULL){
             node_eval(tmp, depth-1);
+            printf("node finish\n");
             if(tmp->score < min){
                 min = tmp->score;
             }
