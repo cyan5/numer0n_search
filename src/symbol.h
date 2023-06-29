@@ -5,21 +5,19 @@
 #define SYMBOL
 
 #define TIMES    1  // 質問回数 < HIST
-#define DEPTH    2  // 探索深さ < HIST
+#define DEPTH    3  // 探索深さ < HIST
 #define USENUM  10  // 使用する数字の数
 #define DI       3  // 桁数
-#define SIZE   720  // 初期の候補数 C(USENUM, DI)
-#define SECOND 252  // 2回目の候補数の最大値
+#define SIZE   720  // 初期の候補数 nCr(USENUM, DI)
+// #define SECOND 252  // 2回目の候補数の最大値
 #define HIST    10  // 質問記録数
 
 typedef struct node_t{
     int depth;               // 質問の回数
     int call_hist[HIST*DI];  // 質問履歴
     int type;                // 候補タイプ
-    int cand_len;            // 解答候補長さ
-    int cand_lst[SIZE*DI];   // 解答候補リスト
-    int call_len;            // 質問候補長さ
-    int call_lst[SIZE*DI];   // 質問候補リスト
+    struct lst_t *cand_lst;  // 解答候補リスト
+    struct lst_t *call_lst;  // 質問候補リスト
     double score;            // 評価値
     double var;              // 評価値の分散
     int judge_len;           //
@@ -32,10 +30,7 @@ typedef struct judge_t{
     int judge;               //
     double score;
     double var;
-    // int cand_len;            // 解答候補長さ
-    // struct num_t *cand_lst_tail;
-    // struct num_t *cand_lst_head;
-    struct lst_t *cand_lst;
+    struct lst_t *cand_lst;  // 解答候補リスト
     struct node_t *head;     //
     struct node_t *tail;     //
     struct judge_t *next;    // 隣のノードへのポインタ

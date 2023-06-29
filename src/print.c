@@ -7,6 +7,10 @@
 #include "float.h"
 
 void node_print(node_t *ptr){
+
+    num_t *tmp;
+    int cnt;
+
     printf("depth   \t= %d\n", ptr->depth);
     printf("call_hist[%d] \t= [", ptr->depth+1);
     for(int i=0; i<=ptr->depth; i++){
@@ -14,30 +18,41 @@ void node_print(node_t *ptr){
         if(i != ptr->depth){printf(" ");}
     }
     printf("]\n");
-    printf("cand_lst[%d] \t= [", ptr->cand_len);
-    for(int i=0; i<ptr->cand_len; i++){
-        printf("%d%d%d", ptr->cand_lst[i*3], ptr->cand_lst[i*3+1], ptr->cand_lst[i*3+2]);
-        if(i >= 20){
+    printf("cand_lst[%d] \t= [", ptr->cand_lst->len);
+
+    cnt = 0;
+    tmp = ptr->cand_lst->head;
+    while(tmp != NULL){
+    // for(int i=0; i<ptr->cand_len; i++){
+        printf("%d%d%d", tmp->data[0], tmp->data[1], tmp->data[2]);
+        if(cnt >= 20){
             printf(" ... ");
             break;
-        }else if(i != ptr->cand_len-1){
+        }else if(cnt != ptr->cand_lst->len-1){
             printf(" ");
         }
+        cnt++;
+        tmp = tmp->next;
     }
     printf("]\n");
-    printf("call_lst[%d] \t= [", ptr->call_len);
-    for(int i=0; i<ptr->call_len; i++){
-        printf("%d%d%d", ptr->call_lst[i*3], ptr->call_lst[i*3+1], ptr->call_lst[i*3+2]);
-        if(i >= 20){
+    printf("call_lst[%d] \t= [", ptr->call_lst->len);
+
+    cnt = 0;
+    tmp = ptr->call_lst->head;
+    // for(int i=0; i<ptr->call_len; i++){
+    while(tmp != NULL){
+        printf("%d%d%d", tmp->data[0], tmp->data[1], tmp->data[2]);
+        if(cnt >= 20){
             printf(" ... ");
             break;
-        }else if(i != ptr->call_len-1){
+        }else if(cnt != ptr->call_lst->len-1){
             printf(" ");
         }
+        cnt++;
+        tmp = tmp->next;
     }
     printf("]\n");
     printf("judge_len \t= %d\n", ptr->judge_len);
-
     printf("\n");
 }
 

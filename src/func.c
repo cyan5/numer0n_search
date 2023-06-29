@@ -13,57 +13,39 @@ node_t* node_create(
     int call[DI], 
     int call_hist[HIST*DI], 
     int parent_type, 
-    // int cand_lst[SIZE*DI]
-    // int cand_len, 
-    // num_t *head, 
-    // num_t *tail
     lst_t *cand_lst
     ){
 
-    // メモリの動的確保
     node_t *ptr = (node_t*)malloc(sizeof(node_t));
     if(ptr == NULL){
         fprintf(stderr, "memory allocation error.\n");
         exit(1);
     }
 
-    // 引数データの格納
+    // データの格納
     ptr->depth = depth;
+    // call_hist
     for(int i=0; i<depth*DI; i++){
         ptr->call_hist[i] = call_hist[i];
     }
     for(int i=0; i<DI; i++){
         ptr->call_hist[depth*DI+i] = call[i];
     }
+    // type
     ptr->type = node_settype(call, depth, call_hist, parent_type);
-    // ptr->cand_len = cand_len;
-    ptr->cand_len = cand_lst->len;
+    // cand_lst
+    ptr->cand_lst = cand_lst;
+    // call_lst
+    ptr->call_lst = lst_init();
+    node_setcall(ptr);
 
-    // for(int i=0; i<cand_len*DI; i++){
-    //     ptr->cand_lst[i] = cand_lst[i];
-    // }
-    ////////////
-    int idx = 0;
-    num_t *num_ptr = cand_lst->head;
-    while(num_ptr != NULL){
-        for(int i=0; i<DI; i++){
-            ptr->cand_lst[idx++] = num_ptr->data[i];
-        }
-        num_ptr = num_ptr->next;
-    }
-    // printf("%d\n", idx);
-    ////////////
-
-    // 固定データの格納
+    // その他データの格納
     ptr->score = -1;
     ptr->var = -1;
-    ptr->next = NULL;
     ptr->judge_len = 0;
     ptr->head = NULL;
     ptr->tail = NULL;
-
-    // 次の質問候補リストを作成
-    node_setcall(ptr);
+    ptr->next = NULL;
 
     // ジャッジリストを作成
     node_judgelst(ptr);
@@ -91,10 +73,9 @@ void node_setcall(node_t *ptr){
     hash *h_lst = NULL;    // ハッシュ値リスト
     int idx_lst[HIST];     // 
     int flag_same;         // 同じ質問はしない
+    num_t *num_ptr;
 
-    int idx = 0;
     for(int i=0; i<SIZE; i++){
-
         flag_same = 1;
         for(int j=0; j<=ptr->depth; j++){
             idx_lst[j] = calc_idx(&CAND_T[i*3], &ptr->call_hist[j*3], ptr->type);
@@ -106,14 +87,15 @@ void node_setcall(node_t *ptr){
 
         if(flag_same && hash_search(h_lst, idx_lst, ptr->depth)){
             hash_push(&h_lst, idx_lst);
-            ptr->call_lst[idx*3  ] = CAND_T[i*3  ];
-            ptr->call_lst[idx*3+1] = CAND_T[i*3+1];
-            ptr->call_lst[idx*3+2] = CAND_T[i*3+2];
-            idx++;
+
+            num_ptr = num_init(&CAND_T[i*DI]);
+            if(ptr == NULL){
+                printf("NULLa\n");
+            }
+            lst_push(ptr->call_lst, num_ptr);
         }
     }
 
-    ptr->call_len = idx;
     hash_clear(&h_lst);
 }
 
@@ -122,15 +104,15 @@ void node_judgelst(node_t *ptr){
     int judge, flag = 1;
     judge_t *tmp, *new;
 
-    // ///
-    num_t *num_ptr;
-    // ///
+    // ノードptrのcand_lstを走査
+    num_t *num_ptr_node = ptr->cand_lst->head;
+    num_t *num_ptr_judge;
 
     // ジャッジが既に存在するか探索
-    for(int i=0; i<ptr->cand_len; i++){
+    while(num_ptr_node != NULL){
 
         tmp = ptr->head;
-        judge = node_setjudge(&ptr->call_hist[ptr->depth*DI], &ptr->cand_lst[i*DI]);
+        judge = node_setjudge(&ptr->call_hist[ptr->depth*DI], num_ptr_node->data);
 
         flag = 1;
         while(tmp != NULL){
@@ -138,15 +120,8 @@ void node_judgelst(node_t *ptr){
             // 見つかったとき
             if(tmp->judge == judge){
                 flag = 0;
-                // for(int j=0; j<DI; j++){
-                //     tmp->cand_lst[tmp->cand_len*DI+j] = ptr->cand_lst[i*DI+j];
-                // }
-                /////////
-                num_ptr = num_init(&ptr->cand_lst[i*DI]);
-                num_push(tmp->cand_lst, num_ptr);
-                // num_push(&tmp->cand_lst_head, &tmp->cand_lst_tail, num_ptr);
-                ////////
-                // tmp->cand_lst->len++;
+                num_ptr_judge = num_init(num_ptr_node->data);
+                lst_push(tmp->cand_lst, num_ptr_judge);
                 break;
             }else{
                 tmp = tmp->next;
@@ -156,9 +131,11 @@ void node_judgelst(node_t *ptr){
         // 見つからなかったとき
         if(flag){
             ptr->judge_len++;
-            new = judge_create(judge, &ptr->cand_lst[i*DI]);
+            new = judge_create(judge, num_ptr_node->data);
             node_push(ptr, new);
         }
+
+        num_ptr_node = num_ptr_node->next;
     }
 }
 
@@ -228,35 +205,23 @@ int judge_enum(int eat, int bite){
 
 judge_t* judge_create(int judge, int cand[DI]){
 
-    // メモリの動的確保
     judge_t *new = (judge_t*)malloc(sizeof(judge_t));
     if(new == NULL){
         fprintf(stderr, "memory allocation error.\n");
         exit(1);
     }
 
-    // 引数データの格納
     new->judge = judge;
-
-    // 固定データの格納
     new->score = -1;
     new->var = -1;
-    // new->cand_len = 1;
+    // cand_lst
+    new->cand_lst = lst_init();
+    num_t *num_ptr = num_init(cand);
+    lst_push(new->cand_lst, num_ptr);
+    
     new->head = NULL;
     new->tail = NULL;
     new->next = NULL;
-
-    ///////
-    new->cand_lst = lst_init();
-    // new->cand_lst_head = NULL;
-    // new->cand_lst_tail = NULL;
-
-    // for(int i=0; i<DI; i++){
-    //     new->cand_lst[i] = cand[i];
-    // }
-    num_t *num_ptr = num_init(cand);
-    // num_push(&new->cand_lst_head, &new->cand_lst_tail, num_ptr);
-    num_push(new->cand_lst, num_ptr);
 
     return new;
 }
@@ -289,6 +254,7 @@ void node_clear(node_t *ptr){
         branch_clear(tmp1);
         tmp1 = tmp2;
     }
+    lst_clear(ptr->call_lst);
     free(ptr);
 }
 
@@ -337,17 +303,7 @@ num_t* num_init(int num[DI]){
     return ptr;
 }
 
-// void num_push(num_t **head, num_t **tail, num_t *ptr){
-
-//     if(*head == NULL){
-//         *head = ptr;
-//     }else{
-//         (*tail)->next = ptr;
-//     }
-//     *tail = ptr;
-// }
-
-void num_push(lst_t *lst, num_t *num){
+void lst_push(lst_t *lst, num_t *num){
 
     lst->len++;
     if(lst->head == NULL){
@@ -368,13 +324,3 @@ void lst_clear(lst_t *ptr){
     }
     free(ptr);
 }
-
-// num_t* num_pop(num_t *head, num_t *tail){
-
-//     num_t *ptr = head;
-//     head = head->next;
-//     if(head == NULL){
-//         tail = NULL;
-//     }
-//     return ptr;
-// }

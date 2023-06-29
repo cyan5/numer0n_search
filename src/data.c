@@ -63,7 +63,7 @@ node_t* queue_pop(que *queue){
 }
 
 void queue_print(que *queue){
-    printf("len  : %d, push : %d, pop  : %d\n", 
+    printf("\rlen: %7d\tpush: %7d\tpop: %7d", 
         queue->len, 
         queue->push_count, 
         queue->pop_count);
@@ -131,10 +131,10 @@ node_t* stack_pop(stk *stack){
 }
 
 void stack_print(stk *stack){
-    printf("len  : %d", stack->len);
-    printf("\tpush : %d", stack->push_count);
-    printf("\tpop  : %d", stack->pop_count);
-    printf("\n");
+    printf("\rlen: %7d\tpush: %7d\tpop: %7d", 
+    stack->len, 
+    stack->push_count, 
+    stack->pop_count);
 }
 
 void stack_clear(stk *stack){

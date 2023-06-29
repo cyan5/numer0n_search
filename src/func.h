@@ -15,17 +15,13 @@ node_t* node_create(
     int call[DI], 
     int call_hist[HIST*DI], 
     int parent_type, 
-    // int cand_lst[SIZE*DI]
-    // int cand_len, 
-    // num_t *head, 
-    // num_t *tail
     lst_t *cand_lst
 );
 
 // 質問、質問履歴のペアからタイプを決定する
 int node_settype(int call[DI], int depth, int call_hist[HIST*DI], int parent_type);
 
-// 次の質問を格納すう
+// 次の質問を格納する
 void node_setcall(node_t *ptr);
 
 // ジャッジリストを作成
@@ -53,12 +49,8 @@ lst_t* lst_init(void);
 // num_t型リストマネージャ
 num_t* num_init(int num[DI]);
 
-
-// void num_push(num_t **head, num_t **tail, num_t *ptr);
-void num_push(lst_t *lst, num_t *num);
-
-// num_t* num_pop(num_t *head, num_t *tail);
-// num_t* num_pop(num_t *head, num_t *tail)
+// void lst_push(num_t **head, num_t **tail, num_t *ptr);
+void lst_push(lst_t *lst, num_t *num);
 
 void lst_clear(lst_t *ptr);
 

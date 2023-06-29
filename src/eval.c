@@ -22,20 +22,16 @@ void node_eval(node_t *ptr, int depth){
 
     while(tmp != NULL){
         if(depth == 0){
-            // sum += SQ(tmp->cand_len);
             sum += SQ(tmp->cand_lst->len);
         }else{
-            // debug
-            // printf("check\n");
             judge_eval(tmp, depth);
-            printf("judge finish\n");
             sum += tmp->cand_lst->len * tmp->score;
         }
 
         tmp = tmp->next;
     }
 
-    ptr->score = 1 + sum / ptr->cand_len;
+    ptr->score = 1 + sum / ptr->cand_lst->len;
 }
 
 void judge_eval(judge_t *ptr, int depth){
@@ -71,7 +67,6 @@ void judge_eval(judge_t *ptr, int depth){
 
         while(tmp != NULL){
             node_eval(tmp, depth-1);
-            printf("node finish\n");
             if(tmp->score < min){
                 min = tmp->score;
             }
@@ -89,11 +84,6 @@ void node_sort(judge_t *ptr){
      * insertion sortでjudge_tに付け替える
     */
 
-    // branch_print(ptr, 0);
-    if(ptr->head == NULL){
-        printf("NULL\n");
-    }
-
     node_t *ptr_now, *ptr_next, *ptr_idx;
 
     // スタックに全てプッシュ
@@ -109,7 +99,6 @@ void node_sort(judge_t *ptr){
     // 挿入ソートで並べ替え
     // 最初のノード
     ptr_now = stack_pop(stack);
-    // breakpoint();
     ptr->head = ptr_now;
     // 2個目以降のノード
     while(stack->len != 0){
