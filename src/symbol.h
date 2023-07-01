@@ -6,10 +6,9 @@
 
 #define TIMES    1  // 質問回数 < HIST
 #define DEPTH    3  // 探索深さ < HIST
-#define USENUM  10  // 使用する数字の数
+#define USENUM  10 // 使用する数字の数
 #define DI       3  // 桁数
-#define SIZE   720  // 初期の候補数 nCr(USENUM, DI)
-// #define SECOND 252  // 2回目の候補数の最大値
+#define SIZE (USENUM*(USENUM-1)*(USENUM-2))  // 初期の候補数 nCr(USENUM, DI)
 #define HIST    10  // 質問記録数
 
 typedef struct node_t{

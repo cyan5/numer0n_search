@@ -28,7 +28,7 @@ void node_setcall(node_t *ptr);
 void node_judgelst(node_t *ptr);
 
 // 質問と解答のペアをジャッジする
-int node_setjudge(int call[3], int cand[3]);
+int node_setjudge(int call[DI], int cand[DI]);
 
 // ジャッジ結果をenumに変換する
 int judge_enum(int eat, int bite);

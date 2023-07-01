@@ -11,74 +11,69 @@
 
 #define SQ(x) ((x)*(x))
 
-void node_eval(node_t *ptr, int depth){
+void node_eval(node_t *node_ptr, int depth){
     /**
      * node_evalとjudge_evalを交互に呼び出す再帰関数
      * node_evalではjudge_evalの
     */
 
-    judge_t *tmp = ptr->head;
     double sum = 0;
 
-    while(tmp != NULL){
+    for(judge_t *judge_ptr=node_ptr->head; judge_ptr!=NULL; judge_ptr=judge_ptr->next){
         if(depth == 0){
-            sum += SQ(tmp->cand_lst->len);
+            sum += SQ(judge_ptr->cand_lst->len);
         }else{
-            judge_eval(tmp, depth);
-            sum += tmp->cand_lst->len * tmp->score;
+            judge_eval(judge_ptr, depth);
+            sum += judge_ptr->cand_lst->len * judge_ptr->score;
         }
-
-        tmp = tmp->next;
     }
 
-    ptr->score = 1 + sum / ptr->cand_lst->len;
+    node_ptr->score = 1 + sum / node_ptr->cand_lst->len;
 }
 
-void judge_eval(judge_t *ptr, int depth){
+void judge_eval(judge_t *judge_ptr, int depth){
 
-    node_t *tmp = ptr->head;
     double min = DBL_MAX;
 
-    if(ptr->judge == J3_0){
-        ptr->score = 0;
-    }else if(ptr->cand_lst->len == 1){
-    // }else if(ptr->cand_len == 1){
-        ptr->score = 1;
-    }else if(ptr->cand_lst->len == 2){
-        ptr->score = 1.5;
+    if(judge_ptr->judge == J3_0){
+        judge_ptr->score = 0;
+    }else if(judge_ptr->cand_lst->len == 1){
+        judge_ptr->score = 1;
+    }else if(judge_ptr->cand_lst->len == 2){
+        judge_ptr->score = 1.5;
     }else{
 
         // WIP
         // 並べ替えをして先頭のスコアを取得するように変更
         // ついでに評価値の悪いものは探索を行わないようにする
 
-        // while(tmp != NULL){
-        //     node_eval(tmp, depth-1);
-        //     tmp = tmp->next;
+        // while(node_ptr != NULL){
+        //     node_eval(node_ptr, depth-1);
+        //     node_ptr = node_ptr->next;
         // }
-        // printf("%d\n", ptr->cand_len);
+        // printf("%d\n", judge_ptr->cand_len);
 
-        // if(tmp != NULL){
-        //     node_sort(ptr);
-        //     ptr->score = ptr->head->score;
+        // if(node_ptr != NULL){
+        //     node_sort(judge_ptr);
+        //     judge_ptr->score = judge_ptr->head->score;
         // }else{
-        //     ptr->score = DBL_MAX;
+        //     judge_ptr->score = DBL_MAX;
         // }
 
-        while(tmp != NULL){
-            node_eval(tmp, depth-1);
-            if(tmp->score < min){
-                min = tmp->score;
+        // node_t *tmp = judge_ptr->head;
+        // while(tmp != NULL){
+        //     tmp = tmp->next;
+        for(node_t *node_ptr=judge_ptr->head; node_ptr!=NULL; node_ptr=node_ptr->next){
+            node_eval(node_ptr, depth-1);
+            if(node_ptr->score < min){
+                min = node_ptr->score;
             }
-            tmp = tmp->next;
         }
-        ptr->score = min;
-
-
+        judge_ptr->score = min;
     }
 }
 
-void node_sort(judge_t *ptr){
+void node_sort(judge_t *judge_ptr){
     /**
      * judge_t からnode_tポインタをスタックに移す
      * insertion sortでjudge_tに付け替える
@@ -88,7 +83,7 @@ void node_sort(judge_t *ptr){
 
     // スタックに全てプッシュ
     stk *stack = stack_init();
-    ptr_now = ptr->head;
+    ptr_now = judge_ptr->head;
     while(ptr_now != NULL){
         ptr_next = ptr_now->next;
         ptr_now->next = NULL;
@@ -99,16 +94,16 @@ void node_sort(judge_t *ptr){
     // 挿入ソートで並べ替え
     // 最初のノード
     ptr_now = stack_pop(stack);
-    ptr->head = ptr_now;
+    judge_ptr->head = ptr_now;
     // 2個目以降のノード
     while(stack->len != 0){
         ptr_now = stack_pop(stack);
         // 先頭のとき
-        if(isbetter(ptr_now, ptr->head, 0)){
-            ptr_now->next = ptr->head;
-            ptr->head = ptr_now;
+        if(isbetter(ptr_now, judge_ptr->head, 0)){
+            ptr_now->next = judge_ptr->head;
+            judge_ptr->head = ptr_now;
         }else{ // 先頭ではないとき
-            ptr_idx = ptr->head;
+            ptr_idx = judge_ptr->head;
             while(1){
                 if(ptr_idx->next == NULL){
                     ptr_idx->next = ptr_now;

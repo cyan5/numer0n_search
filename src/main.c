@@ -9,6 +9,7 @@
 #include "func.h"
 #include "print.h"
 #include "eval.h"
+#include "cand.h"
 
 extern int CAND_T[SIZE*DI];
 
@@ -27,6 +28,9 @@ int main(void){
     sleep(0.5);
     double clock_1 = clock();
 
+    // 解答候補を作成
+    setCAND_T();
+
     // スタックorキューを生成
     stk *stack_search_now = stack_init();
     stk *stack_search_next;
@@ -34,9 +38,9 @@ int main(void){
 
     // ルートノードを生成
     int call[DI];
-    for(int i=0; i<DI; i++){
-        call[i] = i;
-    }
+    call[0] = 0;
+    call[1] = 1;
+    call[2] = 2;
     lst_t *lst_ptr = lst_init();
     num_t *num_ptr;
     for(int i=0; i<SIZE; i++){
@@ -51,8 +55,9 @@ int main(void){
     stack_push(stack_search_now, root);
 
     // 探索
-    node_t *node_ptr, *node_new;
-    judge_t *judge_ptr;
+    node_t *node_ptr; 
+    node_t *node_new;
+    // judge_t *judge_ptr;
     // 質問回数
     for(int i=0; i<TIMES; i++){
 
@@ -62,18 +67,19 @@ int main(void){
 
             // ポップ
             node_ptr = stack_pop(stack_search_now);
+            // node_print(node_ptr);
+            // breakpoint();
             stack_print(stack_search_now);
 
             // ジャッジポインタを作成
-            judge_ptr = node_ptr->head;
-            while(judge_ptr != NULL){
+            for(judge_t *judge_ptr=node_ptr->head; judge_ptr!=NULL; judge_ptr=judge_ptr->next){
 
                 // ジャッジポインタの候補の長さだけループ
-                num_ptr = node_ptr->call_lst->head;
-                while(num_ptr != NULL){
+                for(num_ptr=node_ptr->call_lst->head; num_ptr!=NULL; num_ptr=num_ptr->next){
+
 
                     // ノードを作らない条件をここに書き込む
-                    if(judge_ptr->cand_lst->len <= 2){
+                    if(judge_ptr->cand_lst->len <= 5){
                         // check();
                     }else if(node_ptr->depth >= i+DEPTH){
                         // check();
@@ -108,9 +114,7 @@ int main(void){
                             // }
                         }
                     }
-                    num_ptr = num_ptr->next;
                 }
-                judge_ptr = judge_ptr->next;
             }
 
             // 評価値スタックorキューにプッシュ
@@ -122,6 +126,7 @@ int main(void){
             if(node_ptr->depth == i+1){
                 stack_push(stack_search_next, node_ptr);
             }
+
         }
 
         // 探索木に評価値をつける
@@ -166,6 +171,9 @@ int main(void){
 
     // ファイル処理
     fclose(fp);
+
+    // 正常に終了したことを出力
+    printf("program finished.\n");
 
     return 0;
 }

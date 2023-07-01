@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include "call.h"
 
-int calc_idx(int cand[3], int call_hist[3], int type){
+int calc_idx(int cand[DI], int call_hist[DI], int type){
 
     int score;
     if(cand[0] == call_hist[0]){
@@ -256,7 +256,7 @@ int calc_idx(int cand[3], int call_hist[3], int type){
     return score;
 }
 
-int calc_type(int call[3], int call_hist[3], int parent_type){
+int calc_type(int call[DI], int call_hist[DI], int parent_type){
     /* 
      * callとcall_histからタイプを判別する。
      * typeがDVの時は関数そのものを呼び出さない。

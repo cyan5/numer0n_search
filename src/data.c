@@ -142,7 +142,6 @@ void stack_clear(stk *stack){
     while(tmp1 != NULL){
         tmp2 = tmp1->next;
         // node_t型
-        // free(tmp1->ptr);
         free(tmp1);
         tmp1 = tmp2;
     }

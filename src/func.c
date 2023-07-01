@@ -28,9 +28,9 @@ node_t* node_create(
     for(int i=0; i<depth*DI; i++){
         ptr->call_hist[i] = call_hist[i];
     }
-    for(int i=0; i<DI; i++){
-        ptr->call_hist[depth*DI+i] = call[i];
-    }
+    ptr->call_hist[depth*DI  ] = call[0];
+    ptr->call_hist[depth*DI+1] = call[1];
+    ptr->call_hist[depth*DI+2] = call[2];
     // type
     ptr->type = node_settype(call, depth, call_hist, parent_type);
     // cand_lst
@@ -99,47 +99,44 @@ void node_setcall(node_t *ptr){
     hash_clear(&h_lst);
 }
 
-void node_judgelst(node_t *ptr){
+void node_judgelst(node_t *node_ptr){
 
     int judge, flag = 1;
-    judge_t *tmp, *new;
+    judge_t *judge_ptr, *new;
 
     // ノードptrのcand_lstを走査
-    num_t *num_ptr_node = ptr->cand_lst->head;
     num_t *num_ptr_judge;
 
     // ジャッジが既に存在するか探索
-    while(num_ptr_node != NULL){
+    for(num_t *num_ptr_node = node_ptr->cand_lst->head; num_ptr_node!=NULL; num_ptr_node=num_ptr_node->next){
 
-        tmp = ptr->head;
-        judge = node_setjudge(&ptr->call_hist[ptr->depth*DI], num_ptr_node->data);
+        judge_ptr = node_ptr->head;
+        judge = node_setjudge(&node_ptr->call_hist[node_ptr->depth*DI], num_ptr_node->data);
 
         flag = 1;
-        while(tmp != NULL){
+        while(judge_ptr != NULL){
 
             // 見つかったとき
-            if(tmp->judge == judge){
+            if(judge_ptr->judge == judge){
                 flag = 0;
                 num_ptr_judge = num_init(num_ptr_node->data);
-                lst_push(tmp->cand_lst, num_ptr_judge);
+                lst_push(judge_ptr->cand_lst, num_ptr_judge);
                 break;
             }else{
-                tmp = tmp->next;
+                judge_ptr = judge_ptr->next;
             }
         }
 
         // 見つからなかったとき
         if(flag){
-            ptr->judge_len++;
+            node_ptr->judge_len++;
             new = judge_create(judge, num_ptr_node->data);
-            node_push(ptr, new);
+            node_push(node_ptr, new);
         }
-
-        num_ptr_node = num_ptr_node->next;
     }
 }
 
-int node_setjudge(int call[3], int cand[3]){
+int node_setjudge(int call[DI], int cand[DI]){
     int eat = 0, bite = 0;
     if(call[0] == cand[0]){eat++;}
     if(call[0] == cand[1]){bite++;}
@@ -287,7 +284,7 @@ lst_t* lst_init(void){
 }
 
 
-num_t* num_init(int num[DI]){
+num_t* num_init(int num[3]){
 
     num_t *ptr = (num_t*)malloc(sizeof(num_t));
     if(ptr == NULL){
@@ -295,9 +292,9 @@ num_t* num_init(int num[DI]){
         exit(1);
     }
 
-    for(int i=0; i<DI; i++){
-        ptr->data[i] = num[i];
-    }
+    ptr->data[0] = num[0];
+    ptr->data[1] = num[1];
+    ptr->data[2] = num[2];
     ptr->next = NULL;
 
     return ptr;

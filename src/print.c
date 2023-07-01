@@ -6,53 +6,48 @@
 #include "print.h"
 #include "float.h"
 
-void node_print(node_t *ptr){
+void node_print(node_t *node_ptr){
 
-    num_t *tmp;
+    num_t *num_ptr;
     int cnt;
 
-    printf("depth   \t= %d\n", ptr->depth);
-    printf("call_hist[%d] \t= [", ptr->depth+1);
-    for(int i=0; i<=ptr->depth; i++){
-        printf("%d%d%d", ptr->call_hist[i*3], ptr->call_hist[i*3+1], ptr->call_hist[i*3+2]);
-        if(i != ptr->depth){printf(" ");}
+    printf("depth   \t= %d\n", node_ptr->depth);
+    printf("call_hist[%d] \t= [", node_ptr->depth+1);
+    for(int i=0; i<=node_ptr->depth; i++){
+        printf("%d%d%d", node_ptr->call_hist[i*3], node_ptr->call_hist[i*3+1], node_ptr->call_hist[i*3+2]);
+        if(i != node_ptr->depth){printf(" ");}
     }
     printf("]\n");
-    printf("cand_lst[%d] \t= [", ptr->cand_lst->len);
+    printf("cand_lst[%d] \t= [", node_ptr->cand_lst->len);
 
     cnt = 0;
-    tmp = ptr->cand_lst->head;
-    while(tmp != NULL){
-    // for(int i=0; i<ptr->cand_len; i++){
-        printf("%d%d%d", tmp->data[0], tmp->data[1], tmp->data[2]);
+    num_ptr = node_ptr->cand_lst->head;
+    for(num_t *num_ptr=node_ptr->cand_lst->head; num_ptr!=NULL; num_ptr=num_ptr->next){
+        printf("%d%d%d", num_ptr->data[0], num_ptr->data[1], num_ptr->data[2]);
         if(cnt >= 20){
             printf(" ... ");
             break;
-        }else if(cnt != ptr->cand_lst->len-1){
+        }else if(cnt != node_ptr->cand_lst->len-1){
             printf(" ");
         }
         cnt++;
-        tmp = tmp->next;
     }
     printf("]\n");
-    printf("call_lst[%d] \t= [", ptr->call_lst->len);
+    printf("call_lst[%d] \t= [", node_ptr->call_lst->len);
 
     cnt = 0;
-    tmp = ptr->call_lst->head;
-    // for(int i=0; i<ptr->call_len; i++){
-    while(tmp != NULL){
-        printf("%d%d%d", tmp->data[0], tmp->data[1], tmp->data[2]);
+    for(num_ptr=node_ptr->call_lst->head; num_ptr!=NULL; num_ptr=num_ptr->next){
+        printf("%d%d%d", num_ptr->data[0], num_ptr->data[1], num_ptr->data[2]);
         if(cnt >= 20){
             printf(" ... ");
             break;
-        }else if(cnt != ptr->call_lst->len-1){
+        }else if(cnt != node_ptr->call_lst->len-1){
             printf(" ");
         }
         cnt++;
-        tmp = tmp->next;
     }
     printf("]\n");
-    printf("judge_len \t= %d\n", ptr->judge_len);
+    printf("judge_len \t= %d\n", node_ptr->judge_len);
     printf("\n");
 }
 
@@ -128,7 +123,7 @@ void tree_fprint(FILE *fp, node_t *ptr){
     for(int i=0; i<ptr->depth*2; i++){
         fprintf(fp, "    ");
     }
-    fprintf(fp, "* ");
+    fprintf(fp, "+ ");
     fprintf(fp, "%d%d%d (%d) %lf\n", 
         ptr->call_hist[ptr->depth*DI], 
         ptr->call_hist[ptr->depth*DI+1], 
