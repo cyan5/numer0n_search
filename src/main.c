@@ -62,6 +62,37 @@ int main(void){
     for(int i=0; i<TIMES; i++){
 
         // 探索木を作る
+        // ポップするスタック stack_search
+        // depth 0(012) depth1(013-345)
+
+        // search関数の仕様
+        // 引数はルートノードポインタ、探索済みdepth, 探索するdpeth
+        // depth 0までツリー作成
+        // (depth -1の評価)
+        // (depth -1を枝刈り)
+        // depth 1までツリー作成
+        // (depth 0の評価)
+        // (depth 0を枝刈り)
+        // depth 2までツリーを作成
+        // depth 1の評価
+        // depth 1を枝刈り
+        // depth 3までツリーを作成
+        // depth 2の評価
+        // depth 2を枝刈り
+        // depth 4までツリーを作成
+        // depth 3の評価
+        // depth 3を枝刈り
+        // depth 5までツリーを作成
+        // depth 4の評価
+        // depth 4を枝刈り
+        // depth 6までツリーを作成
+        // depth 5の評価
+        // depth 5を枝刈り
+
+        // プッシュするスタック stack_search_next
+        // ルート root
+
+
         stack_search_next = stack_init();
         while(stack_search_now->head != NULL){
 
@@ -79,7 +110,7 @@ int main(void){
 
 
                     // ノードを作らない条件をここに書き込む
-                    if(judge_ptr->cand_lst->len <= 5){
+                    if(judge_ptr->cand_lst->len <= 2){
                         // check();
                     }else if(node_ptr->depth >= i+DEPTH){
                         // check();
@@ -126,7 +157,6 @@ int main(void){
             if(node_ptr->depth == i+1){
                 stack_push(stack_search_next, node_ptr);
             }
-
         }
 
         // 探索木に評価値をつける
@@ -156,6 +186,7 @@ int main(void){
     double clock_2 = clock();
 
     // 探索木の出力
+    printf("\n");
     tree_print(root);
     tree_fprint(fp, root);
 

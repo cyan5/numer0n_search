@@ -63,12 +63,27 @@ void judge_eval(judge_t *judge_ptr, int depth){
         // node_t *tmp = judge_ptr->head;
         // while(tmp != NULL){
         //     tmp = tmp->next;
+
+
+
+        // for(node_t *node_ptr=judge_ptr->head; node_ptr!=NULL; node_ptr=node_ptr->next){
+        //     node_eval(node_ptr, depth-1);
+        //     if(node_ptr->score < min){
+        //         min = node_ptr->score;
+        //     }
+        // }
+
+
         for(node_t *node_ptr=judge_ptr->head; node_ptr!=NULL; node_ptr=node_ptr->next){
             node_eval(node_ptr, depth-1);
             if(node_ptr->score < min){
                 min = node_ptr->score;
             }
+            // node_sort(judge_ptr);
         }
+
+
+
         judge_ptr->score = min;
     }
 }
@@ -83,13 +98,17 @@ void node_sort(judge_t *judge_ptr){
 
     // スタックに全てプッシュ
     stk *stack = stack_init();
-    ptr_now = judge_ptr->head;
-    while(ptr_now != NULL){
-        ptr_next = ptr_now->next;
-        ptr_now->next = NULL;
-        stack_push(stack, ptr_now);
-        ptr_now = ptr_next;
+    for(node_t *node_ptr=judge_ptr->head; node_ptr!=NULL; node_ptr=node_ptr->next){
+
+        stack_push(stack, node_ptr);
     }
+    // ptr_now = judge_ptr->head;
+    // while(ptr_now != NULL){
+    //     ptr_next = ptr_now->next;
+    //     ptr_now->next = NULL;
+    //     stack_push(stack, ptr_now);
+    //     ptr_now = ptr_next;
+    // }
 
     // 挿入ソートで並べ替え
     // 最初のノード

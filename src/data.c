@@ -55,10 +55,11 @@ node_t* queue_pop(que *queue){
     if(tmp->next == NULL){
         queue->tail = NULL;
     }
+    free(tmp);
+
     queue->len--;
     queue->pop_count++;
 
-    free(tmp);
     return ptr;
 }
 
@@ -123,6 +124,7 @@ node_t* stack_pop(stk *stack){
     node_t *ptr = tmp->ptr;
 
     stack->head = tmp->next;
+    free(tmp);
 
     stack->len--;
     stack->pop_count++;
