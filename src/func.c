@@ -13,7 +13,7 @@ node_t* node_create(
     int call[DI], 
     int call_hist[HIST*DI], 
     int parent_type, 
-    lst_t *cand_lst
+    list_t *cand_lst
     ){
 
     node_t *ptr = (node_t*)malloc(sizeof(node_t));
@@ -36,19 +36,19 @@ node_t* node_create(
     // cand_lst
     ptr->cand_lst = cand_lst;
     // call_lst
-    ptr->call_lst = lst_init();
+    ptr->call_lst = list_init();
     node_setcall(ptr);
 
     // その他データの格納
     ptr->score = -1;
     ptr->var = -1;
-    ptr->judge_len = 0;
+    ptr->edge_len = 0;
     ptr->head = NULL;
     ptr->tail = NULL;
     ptr->next = NULL;
 
     // ジャッジリストを作成
-    node_judgelst(ptr);
+    node_edgelst(ptr);
 
     return ptr;
 }
@@ -70,10 +70,10 @@ int node_settype(int call[DI], int depth, int call_hist[HIST*DI], int parent_typ
 
 void node_setcall(node_t *ptr){
 
-    hash *h_lst = NULL;    // ハッシュ値リスト
+    hash_t *h_lst = NULL;    // ハッシュ値リスト
     int idx_lst[HIST];     // 
     int flag_same;         // 同じ質問はしない
-    num_t *num_ptr;
+    unit_t *unit;
 
     for(int i=0; i<SIZE; i++){
         flag_same = 1;
@@ -88,49 +88,49 @@ void node_setcall(node_t *ptr){
         if(flag_same && hash_search(h_lst, idx_lst, ptr->depth)){
             hash_push(&h_lst, idx_lst);
 
-            num_ptr = num_init(&CAND_T[i*DI]);
+            unit = unit_init(&CAND_T[i*DI]);
             if(ptr == NULL){
                 printf("NULLa\n");
             }
-            lst_push(ptr->call_lst, num_ptr);
+            list_push(ptr->call_lst, unit);
         }
     }
 
     hash_clear(&h_lst);
 }
 
-void node_judgelst(node_t *node_ptr){
+void node_edgelst(node_t *node_ptr){
 
     int judge, flag = 1;
-    judge_t *judge_ptr, *new;
+    edge_t *edge_ptr, *new;
 
     // ノードptrのcand_lstを走査
-    num_t *num_ptr_judge;
+    unit_t *unit_judge;
 
     // ジャッジが既に存在するか探索
-    for(num_t *num_ptr_node = node_ptr->cand_lst->head; num_ptr_node!=NULL; num_ptr_node=num_ptr_node->next){
+    for(unit_t *unit_node = node_ptr->cand_lst->head; unit_node!=NULL; unit_node=unit_node->next){
 
-        judge_ptr = node_ptr->head;
-        judge = node_setjudge(&node_ptr->call_hist[node_ptr->depth*DI], num_ptr_node->data);
+        edge_ptr = node_ptr->head;
+        judge = node_setjudge(&node_ptr->call_hist[node_ptr->depth*DI], unit_node->data);
 
         flag = 1;
-        while(judge_ptr != NULL){
+        while(edge_ptr != NULL){
 
             // 見つかったとき
-            if(judge_ptr->judge == judge){
+            if(edge_ptr->judge == judge){
                 flag = 0;
-                num_ptr_judge = num_init(num_ptr_node->data);
-                lst_push(judge_ptr->cand_lst, num_ptr_judge);
+                unit_judge = unit_init(unit_node->data);
+                list_push(edge_ptr->cand_lst, unit_judge);
                 break;
             }else{
-                judge_ptr = judge_ptr->next;
+                edge_ptr = edge_ptr->next;
             }
         }
 
         // 見つからなかったとき
         if(flag){
-            node_ptr->judge_len++;
-            new = judge_create(judge, num_ptr_node->data);
+            node_ptr->edge_len++;
+            new = edge_create(judge, unit_node->data);
             node_push(node_ptr, new);
         }
     }
@@ -200,9 +200,9 @@ int judge_enum(int eat, int bite){
     return score;
 }
 
-judge_t* judge_create(int judge, int cand[DI]){
+edge_t* edge_create(int judge, int cand[DI]){
 
-    judge_t *new = (judge_t*)malloc(sizeof(judge_t));
+    edge_t *new = (edge_t*)malloc(sizeof(edge_t));
     if(new == NULL){
         fprintf(stderr, "memory allocation error.\n");
         exit(1);
@@ -212,9 +212,9 @@ judge_t* judge_create(int judge, int cand[DI]){
     new->score = -1;
     new->var = -1;
     // cand_lst
-    new->cand_lst = lst_init();
-    num_t *num_ptr = num_init(cand);
-    lst_push(new->cand_lst, num_ptr);
+    new->cand_lst = list_init();
+    unit_t *unit = unit_init(cand);
+    list_push(new->cand_lst, unit);
     
     new->head = NULL;
     new->tail = NULL;
@@ -223,7 +223,7 @@ judge_t* judge_create(int judge, int cand[DI]){
     return new;
 }
 
-void node_push(node_t *ptr, judge_t *child){
+void node_push(node_t *ptr, edge_t *child){
 
     if(ptr->head == NULL){
         ptr->head = child;
@@ -233,7 +233,7 @@ void node_push(node_t *ptr, judge_t *child){
     ptr->tail = child;
 }
 
-void judge_push(judge_t *ptr, node_t *child){
+void edge_push(edge_t *ptr, node_t *child){
 
     if(ptr->head == NULL){
         ptr->head = child;
@@ -245,79 +245,79 @@ void judge_push(judge_t *ptr, node_t *child){
 
 void node_clear(node_t *ptr){
 
-    judge_t *tmp1 = ptr->head, *tmp2;
+    edge_t *tmp1 = ptr->head, *tmp2;
     while(tmp1 != NULL){
         tmp2 = tmp1->next;
         branch_clear(tmp1);
         tmp1 = tmp2;
     }
-    lst_clear(ptr->call_lst);
+    list_clear(ptr->call_lst);
     free(ptr);
 }
 
-void branch_clear(judge_t *ptr){
+void branch_clear(edge_t *edge){
 
-    node_t *tmp1 = ptr->head, *tmp2;
+    node_t *tmp1 = edge->head, *tmp2;
     while(tmp1 != NULL){
         tmp2 = tmp1->next;
         node_clear(tmp1);
         tmp1 = tmp2;
     }
-    lst_clear(ptr->cand_lst);
-    free(ptr);
+    list_clear(edge->cand_lst);
+    free(edge);
 }
 
-lst_t* lst_init(void){
+list_t* list_init(void){
 
-    lst_t *ptr = (lst_t*)malloc(sizeof(lst_t));
-    if(ptr == NULL){
+    list_t *list = (list_t*)malloc(sizeof(list_t));
+    if(list == NULL){
         fprintf(stderr, "memoly allocation error.\n");
         exit(1);
     }
 
-    ptr->len = 0;
-    ptr->head = NULL;
-    ptr->tail = NULL;
-    ptr->next = NULL;
+    list->len = 0;
+    list->head = NULL;
+    list->tail = NULL;
+    list->next = NULL;
 
-    return ptr;
+    return list;
 }
 
 
-num_t* num_init(int num[3]){
+unit_t* unit_init(int num[3]){
 
-    num_t *ptr = (num_t*)malloc(sizeof(num_t));
-    if(ptr == NULL){
+    unit_t *unit = (unit_t*)malloc(sizeof(unit_t));
+    if(unit == NULL){
         fprintf(stderr, "memoly allocation error.\n");
         exit(1);
     }
 
-    ptr->data[0] = num[0];
-    ptr->data[1] = num[1];
-    ptr->data[2] = num[2];
-    ptr->next = NULL;
+    unit->data[0] = num[0];
+    unit->data[1] = num[1];
+    unit->data[2] = num[2];
+    unit->next = NULL;
 
-    return ptr;
+    return unit;
 }
 
-void lst_push(lst_t *lst, num_t *num){
+void list_push(list_t *list, unit_t *unit){
 
-    lst->len++;
-    if(lst->head == NULL){
-        lst->head = num;
+    list->len++;
+    if(list->head == NULL){
+        list->head = unit;
     }else{
-        lst->tail->next = num;
+        list->tail->next = unit;
     }
-    lst->tail = num;
+    list->tail = unit;
 }
 
-void lst_clear(lst_t *ptr){
+void list_clear(list_t *list){
 
-    num_t *tmp1 = ptr->head, *tmp2;
+    unit_t *tmp1 = list->head, *tmp2;
     while(tmp1 != NULL){
         tmp2 = tmp1->next;
         free(tmp1);
         tmp1 = tmp2;
     }
-    free(ptr);
+    free(list);
 }

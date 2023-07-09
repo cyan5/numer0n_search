@@ -6,11 +6,12 @@
 
 #include "symbol.h"
 
-typedef struct hash{
+typedef struct hash_t{
     int data[HIST];
-    struct hash *next;
-}hash;
-/* HIST個のハッシュ値をリストとして保存しておく
+    struct hash_t *next;
+}hash_t;
+/**
+ * HIST個のハッシュ値をリストとして保存しておく単方向リスト
  * リストは全て等しい場合のみ、同一の質問候補として扱われる
  * */
 
@@ -24,17 +25,17 @@ int calc_type(int call[DI], int call_hist[DI], int parent_type);
    012→013 : type 0→1  
  * parent_typeを受け取り、値を更新する */
 
-int hash_search(hash *ptr, int data[HIST], int depth);
+int hash_search(hash_t *ptr, int data[HIST], int depth);
 /* ハッシュ値配列 data[HIST] が 単方向リストhashに含まれているか検索
  * 含まれている場合:0  含まれていない場合:1 */
 
-void hash_push(hash **ptr, int data[HIST]);
+void hash_push(hash_t **ptr, int data[HIST]);
 /* 単方向リストhashにデータをプッシュ */
 
 void hash_pop(int *type_stb, int type_tmp);
 /* 現在のタイプと新しいタイプからタイプを決定 */
 
-void hash_clear(hash **ptr);
+void hash_clear(hash_t **ptr);
 /* 単方向リストhashを空にする */
 
 #endif

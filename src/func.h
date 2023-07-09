@@ -15,7 +15,7 @@ node_t* node_create(
     int call[DI], 
     int call_hist[HIST*DI], 
     int parent_type, 
-    lst_t *cand_lst
+    list_t *cand_lst
 );
 
 // 質問、質問履歴のペアからタイプを決定する
@@ -25,7 +25,7 @@ int node_settype(int call[DI], int depth, int call_hist[HIST*DI], int parent_typ
 void node_setcall(node_t *ptr);
 
 // ジャッジリストを作成
-void node_judgelst(node_t *ptr);
+void node_edgelst(node_t *ptr);
 
 // 質問と解答のペアをジャッジする
 int node_setjudge(int call[DI], int cand[DI]);
@@ -36,26 +36,26 @@ int judge_enum(int eat, int bite);
 /* ジャッジノードを作成する
  * メモリ動的確保等
  * */
-judge_t* judge_create(int judge, int cand[DI]);
+edge_t* edge_create(int judge, int cand[DI]);
 
 // ノードにジャッジをプッシュして木構造にする
-void node_push(node_t *ptr, judge_t *child);
+void node_push(node_t *ptr, edge_t *child);
 
 // ジャッジにノードをプッシュして木構造にする
-void judge_push(judge_t *ptr, node_t *child);
+void edge_push(edge_t *ptr, node_t *child);
 
-// lst_t型マネージャ
-lst_t* lst_init(void);
-// num_t型リストマネージャ
-num_t* num_init(int num[DI]);
+// list_t型マネージャ
+list_t* list_init(void);
+// unit_t型リストマネージャ
+unit_t* unit_init(int num[DI]);
 
-// void lst_push(num_t **head, num_t **tail, num_t *ptr);
-void lst_push(lst_t *lst, num_t *num);
+// void list_push(unit_t **head, unit_t **tail, unit_t *ptr);
+void list_push(list_t *lst, unit_t *unit);
 
-void lst_clear(lst_t *ptr);
+void list_clear(list_t *ptr);
 
 // // 探索木のメモリを解放する
 void node_clear(node_t *ptr);
-void branch_clear(judge_t *ptr);
+void branch_clear(edge_t *ptr);
 
 #endif

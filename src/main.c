@@ -10,6 +10,7 @@
 #include "print.h"
 #include "eval.h"
 #include "cand.h"
+// #include "search.h"
 
 extern int CAND_T[SIZE*DI];
 
@@ -32,24 +33,24 @@ int main(void){
     setCAND_T();
 
     // スタックorキューを生成
-    stk *stack_search_now = stack_init();
-    stk *stack_search_next;
-    stk *stack_eval = stack_init();
+    stack_t *stack_search_now = stack_init();
+    stack_t *stack_search_next;
+    stack_t *stack_eval = stack_init();
 
     // ルートノードを生成
     int call[DI];
     call[0] = 0;
     call[1] = 1;
     call[2] = 2;
-    lst_t *lst_ptr = lst_init();
-    num_t *num_ptr;
+    list_t *list = list_init();
+    unit_t *unit;
     for(int i=0; i<SIZE; i++){
-        num_ptr = num_init(&CAND_T[i*DI]);
-        lst_push(lst_ptr, num_ptr);
+        unit = unit_init(&CAND_T[i*DI]);
+        list_push(list, unit);
     }
     int call_hist[HIST*DI];
     // 引数 depth, call, call_hist, parent_type, cand_lst
-    node_t *root = node_create(0, call, call_hist, NU, lst_ptr);
+    node_t *root = node_create(0, call, call_hist, NU, list);
 
     // ルートをスタックorキューにプッシュ
     stack_push(stack_search_now, root);
@@ -57,7 +58,7 @@ int main(void){
     // 探索
     node_t *node_ptr; 
     node_t *node_new;
-    // judge_t *judge_ptr;
+    // edge_t *edge_ptr;
     // 質問回数
     for(int i=0; i<TIMES; i++){
 
@@ -103,14 +104,13 @@ int main(void){
             stack_print(stack_search_now);
 
             // ジャッジポインタを作成
-            for(judge_t *judge_ptr=node_ptr->head; judge_ptr!=NULL; judge_ptr=judge_ptr->next){
+            for(edge_t *edge_ptr=node_ptr->head; edge_ptr!=NULL; edge_ptr=edge_ptr->next){
 
                 // ジャッジポインタの候補の長さだけループ
-                for(num_ptr=node_ptr->call_lst->head; num_ptr!=NULL; num_ptr=num_ptr->next){
-
+                for(unit=node_ptr->call_lst->head; unit!=NULL; unit=unit->next){
 
                     // ノードを作らない条件をここに書き込む
-                    if(judge_ptr->cand_lst->len <= 2){
+                    if(edge_ptr->cand_lst->len <= 2){
                         // check();
                     }else if(node_ptr->depth >= i+DEPTH){
                         // check();
@@ -118,10 +118,10 @@ int main(void){
 
                         node_new = node_create(
                             node_ptr->depth+1, 
-                            num_ptr->data, 
+                            unit->data, 
                             node_ptr->call_hist, 
                             node_ptr->type, 
-                            judge_ptr->cand_lst
+                            edge_ptr->cand_lst
                             );
 
                         // ノードをプッシュしない条件
@@ -130,19 +130,9 @@ int main(void){
                             // check();
                         }else{
                             // ジャッジにプッシュ
-                            judge_push(judge_ptr, node_new);
+                            edge_push(edge_ptr, node_new);
                             // キューにプッシュ
                             stack_push(stack_search_now, node_new);
-                            // // 次の探索キューにプッシュ
-                            // printf("check %d == %d\n", node_new->depth, i+1);
-                            // if(node_new->depth == i+1){
-                            //     stack_push(stack_search_next, node_new);
-                            // }
-
-                            // 評価値スタックへ送る
-                            // if(node_ptr->depth == i){
-                            //     stack_push(stack_eval, node_new);
-                            // }
                         }
                     }
                 }
@@ -164,6 +154,7 @@ int main(void){
             node_ptr = stack_pop(stack_eval);
             node_eval(node_ptr, DEPTH);
         }
+
 
         // 並べ替え & 候補
 
@@ -190,7 +181,7 @@ int main(void){
     tree_print(root);
     tree_fprint(fp, root);
 
-    printf("\nProcessing time = %.4lf sec.\n", (clock_2-clock_1)/1000000);
+    printf("\nProcessing time = %.4lf sec.\n", (clock_2-clock_1)/(1000*1000));
 
     stack_print(stack_search_now);
     printf("\n");

@@ -8,44 +8,44 @@
 #define DEPTH    2  // 探索深さ < HIST
 #define USENUM  10 // 使用する数字の数
 #define DI       3  // 桁数
-#define SIZE (USENUM*(USENUM-1)*(USENUM-2))  // 初期の候補数 nCr(USENUM, DI)
+#define SIZE (USENUM*(USENUM-1)*(USENUM-2))  // 初期の候補数 nPr(USENUM, DI)
 #define HIST    10  // 質問記録数
 
 typedef struct node_t{
     int depth;               // 質問の回数
     int call_hist[HIST*DI];  // 質問履歴
     int type;                // 候補タイプ
-    struct lst_t *cand_lst;  // 解答候補リスト
-    struct lst_t *call_lst;  // 質問候補リスト
+    struct list_t *cand_lst;  // 解答候補リスト
+    struct list_t *call_lst;  // 質問候補リスト
     double score;            // 評価値
     double var;              // 評価値の分散
-    int judge_len;           //
-    struct judge_t *head;    //
-    struct judge_t *tail;    //
+    int edge_len;           //
+    struct edge_t *head;    //
+    struct edge_t *tail;    //
     struct node_t *next;     // 隣のノードへのポインタ
 }node_t;
 
-typedef struct judge_t{
+typedef struct edge_t{
     int judge;               //
     double score;
     double var;
-    struct lst_t *cand_lst;  // 解答候補リスト
+    struct list_t *cand_lst;  // 解答候補リスト
     struct node_t *head;     //
     struct node_t *tail;     //
-    struct judge_t *next;    // 隣のノードへのポインタ
-}judge_t;
+    struct edge_t *next;    // 隣のノードへのポインタ
+}edge_t;
 
-typedef struct lst_t{
+typedef struct list_t{
     int len;
-    struct num_t *head;
-    struct num_t *tail;
-    struct lst_t *next;
-}lst_t;
+    struct unit_t *head;
+    struct unit_t *tail;
+    struct list_t *next;
+}list_t;
 
-typedef struct num_t{
+typedef struct unit_t{
     int data[DI];
-    struct num_t *next;
-}num_t;
+    struct unit_t *next;
+}unit_t;
 
 enum type {
     DV,   // 全てを区別する。notを返す

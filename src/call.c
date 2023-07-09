@@ -393,13 +393,13 @@ int calc_type(int call[DI], int call_hist[DI], int parent_type){
     }
 }
 
-int hash_search(hash *ptr, int data[HIST], int depth){
+int hash_search(hash_t *ptr, int data[HIST], int depth){
     /* 
      * tmpがNULLまで走査したらscore = 1
      * 途中で値が見つかったらscore = 0 を代入してbreakする。
      * */
 
-    hash *tmp = ptr;   /* 走査するためのポインタ変数    */
+    hash_t *tmp = ptr;   /* 走査するためのポインタ変数    */
     int score;         /* return score                  */
     int flag;          /* 2重ループを抜けるためのフラグ */
     while(1){
@@ -428,9 +428,9 @@ int hash_search(hash *ptr, int data[HIST], int depth){
     return score;
 }
 
-void hash_push(hash **ptr, int data[HIST]){
+void hash_push(hash_t **ptr, int data[HIST]){
 
-    hash *new = (hash*)malloc(sizeof(hash));
+    hash_t *new = (hash_t*)malloc(sizeof(hash_t));
     if(new == NULL){
         fprintf(stderr, "memory allocation error\n");
         exit(1);
@@ -443,8 +443,8 @@ void hash_push(hash **ptr, int data[HIST]){
     *ptr = new;
 }
 
-void hash_clear(hash **ptr){
-    hash *tmp_1 = *ptr, *tmp_2;
+void hash_clear(hash_t **ptr){
+    hash_t *tmp_1 = *ptr, *tmp_2;
     while(tmp_1->next != NULL){
         tmp_2 = tmp_1->next;
         free(tmp_1);

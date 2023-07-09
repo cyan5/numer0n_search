@@ -8,13 +8,13 @@
 
 // ノードに評価値をつける
 void node_eval(node_t *ptr, int depth);
-void judge_eval(judge_t *ptr, int depth);
+void edge_eval(edge_t *ptr, int depth);
 
 /**
- * judge_tの下の階層のnode_tを評価値順にソートする
+ * edge_tの下の階層のnode_tを評価値順にソートする
  * 要素数が少ないためinsertion sort
  */
-void node_sort(judge_t *ptr);
+void node_sort(edge_t *ptr);
 
 /**
  * ptr_xがptr_yよりも良いとき1, 悪いとき-1
