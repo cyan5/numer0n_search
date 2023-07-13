@@ -6,25 +6,25 @@
 
 #include "symbol.h"
 
-// ノードに評価値をつける
 void node_eval(node_t *ptr, int depth);
 void edge_eval(edge_t *ptr, int depth);
+/**
+ * 再帰呼び出しによってノードに評価値をつける関数
+ * 
+ */
 
+void node_sort(edge_t *ptr);
 /**
  * edge_tの下の階層のnode_tを評価値順にソートする
- * 要素数が少ないためinsertion sort
+ * 要素数が少ないためinsertion sortで十分
  */
-void node_sort(edge_t *ptr);
 
-/**
- * ptr_xがptr_yよりも良いとき1, 悪いとき-1
- * 比較優先順位
- * score
- * var
- * call_hist[DI*depth]
- * call_hist[DI*depth+1]
- * call_hist[DI*depth+2]
-*/
 int isbetter(node_t *ptr_x, node_t *ptr_y, int cmprule);
+/**
+ * ptr_xがptr_yよりも良いとき1, 悪いとき0を返す
+ * cmpruleは比較ルール:
+ * 0 : score, var, digit の順
+ * 1 : 未実装
+ */
 
 #endif

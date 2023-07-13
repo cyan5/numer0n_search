@@ -12,27 +12,29 @@
 #define HIST    10  // 質問記録数
 
 typedef struct node_t{
+    int evaluated;           // 評価完了フラグ
     int depth;               // 質問の回数
     int call_hist[HIST*DI];  // 質問履歴
     int type;                // 候補タイプ
-    struct list_t *cand_lst;  // 解答候補リスト
-    struct list_t *call_lst;  // 質問候補リスト
+    struct list_t *cand_lst; // 解答候補リスト
+    struct list_t *call_lst; // 質問候補リスト
     double score;            // 評価値
     double var;              // 評価値の分散
-    int edge_len;           //
-    struct edge_t *head;    //
-    struct edge_t *tail;    //
+    int edge_len;            //
+    struct edge_t *head;     //
+    struct edge_t *tail;     //
     struct node_t *next;     // 隣のノードへのポインタ
 }node_t;
 
 typedef struct edge_t{
-    int judge;               //
-    double score;
-    double var;
-    struct list_t *cand_lst;  // 解答候補リスト
+    int evaluated;           // 評価完了フラグ
+    int judge;               // ジャッジ(辞書型)
+    double score;            // スコア
+    double var;              // 分散
+    struct list_t *cand_lst; // 解答候補リスト
     struct node_t *head;     //
     struct node_t *tail;     //
-    struct edge_t *next;    // 隣のノードへのポインタ
+    struct edge_t *next;     // 隣のノードへのポインタ
 }edge_t;
 
 typedef struct list_t{

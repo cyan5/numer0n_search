@@ -34,13 +34,19 @@ void node_eval(node_t *node, int depth){
 void edge_eval(edge_t *edge, int depth){
 
     if(edge->judge == J3_0){
+        edge->evaluated = 1;
         edge->score = 0;
     }else if(edge->cand_lst->len == 1){
+        edge->evaluated = 1;
         edge->score = 1;
     }else if(edge->cand_lst->len == 2){
+        edge->evaluated = 1;
         edge->score = 1.5;
     }else if(edge->head == NULL){
+        edge->evaluated = 1;
         edge->score = DBL_MAX;
+    }else if(depth == 0){
+        edge->score = edge->cand_lst->len;
     }else{
 
         for(node_t *node=edge->head; node!=NULL; node=node->next){

@@ -35,9 +35,15 @@ node_t* node_create(
     ptr->type = node_settype(call, depth, call_hist, parent_type);
     // cand_lst
     ptr->cand_lst = cand_lst;
-    // call_lst
-    ptr->call_lst = list_init();
-    node_setcall(ptr);
+    // evaluated and call_lst
+    if(cand_lst->len <= 2){
+        ptr->evaluated = 1;
+        ptr->call_lst = cand_lst;
+    }else{
+        ptr->evaluated = 0;
+        ptr->call_lst = list_init();
+        node_setcall(ptr);
+    }
 
     // その他データの格納
     ptr->score = -1;
@@ -208,6 +214,7 @@ edge_t* edge_create(int judge, int cand[DI]){
         exit(1);
     }
 
+    new->evaluated = 0;
     new->judge = judge;
     new->score = -1;
     new->var = -1;
