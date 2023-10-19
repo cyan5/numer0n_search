@@ -6,17 +6,21 @@
 #include "search.h"
 #include "data.h"
 #include "func.h"
+#include "eval.h"
 
-void create_tree(queue_t *queue, int depth){
+void create_tree(queue_t *queue, int depth, int seq){
     /**
-     * depthは相対値ではなく絶対値
-     * depth = 0ならdepth=0(012のedge)まで作成する
+     * depthは相対的な深さではなく絶対的な深さ
+     * depth = 0なら(    012のedge)まで作成する
      * depth = 1なら(013-345のedge)まで作成する
-     */
+     * depth = 2なら(014-678のedge)まで作成する
+     * seqはdepthを一度にいくつ進めるか
+    */
 
     node_t *node_pop, *node_new;
 
     while(queue->len != 0){
+
         node_pop = queue_pop(queue);
         queue_print(queue);
 
@@ -25,16 +29,16 @@ void create_tree(queue_t *queue, int depth){
             // no process
         }else{
             // 未評価
-            // エッジポインタを作成
+            // ノードのエッジ長だけループ
             for(edge_t *edge=node_pop->head; edge!=NULL; edge=edge->next){
 
-                // エッジの候補長だけループ
+                // エッジの候補(=ノードのコールリスト)だけループ
                 for(unit_t *unit=node_pop->call_lst->head; unit!=NULL; unit=unit->next){
 
                     // ノードを作らない条件
                     if(edge->cand_lst->len <= 2){
                         // check();
-                    }else if(node_pop->depth >= depth){
+                    }else if(node_pop->depth >= depth + seq){
                         // check();
                     }else{  // ノード作成
 
@@ -46,9 +50,12 @@ void create_tree(queue_t *queue, int depth){
                             edge->cand_lst
                         );
 
+                        // 作ったノードをプッシュするかの判定
                         if(node_new->cand_lst->len == node_pop->cand_lst->len){
+                            // 候補が減らない解答はプッシュしない
                             node_clear(node_new);
                         }else{
+                            // プッシュする
                             edge_push(edge, node_new);
                             queue_push(queue, node_new);
                         }
@@ -59,13 +66,23 @@ void create_tree(queue_t *queue, int depth){
     }
 }
 
+void eval_tree(queue_t *queue, int seq){
+
+    node_t *node_pop;
+
+    while(queue->len != 0){
+        node_pop = queue_pop(queue);
+        node_eval(node_pop, seq);
+    }
+}
+
 queue_t* fetch_tree(queue_t *queue, node_t *root, int depth){
     /**
      * 空のキューを受け取る
      * ルートをキューにプッシュ
      * 子ノードをプッシュしていく
      * 先頭ポインタがdepthと同じになったらbreak
-     */
+    */
 
     if(queue->len != 0){
         fprintf(stderr, "debug queue not empty.\n");

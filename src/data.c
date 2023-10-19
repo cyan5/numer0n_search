@@ -41,7 +41,7 @@ void queue_push(queue_t *queue, node_t *node){
     queue->push_count++;
 }
 
-node_t* queue_pop(queue_t*queue){
+node_t* queue_pop(queue_t *queue){
 
     if(queue->head == NULL){
         fprintf(stderr, "queue underflow.\n");
@@ -119,7 +119,7 @@ node_t* stack_pop(stack_t *stack){
         fprintf(stderr, "stack underflow.\n");
         exit(1);
     }
-    
+
     data_t *tmp = stack->head;
     node_t *ptr = tmp->ptr;
 

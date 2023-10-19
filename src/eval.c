@@ -6,12 +6,11 @@
 #include <float.h>
 #include "eval.h"
 #include "data.h"
-
 #include "print.h"
 
 #define SQ(x) ((x)*(x))
 
-void node_eval(node_t *node, int depth){
+void node_eval(node_t *node, int seq){
     /**
      * node_evalとedge_evalを交互に呼び出す再帰関数
      * node_evalではedge_evalの
@@ -20,10 +19,10 @@ void node_eval(node_t *node, int depth){
     double sum = 0;
 
     for(edge_t *edge=node->head; edge!=NULL; edge=edge->next){
-        if(depth == 0){
+        if(seq == 0){
             sum += SQ(edge->cand_lst->len);
         }else{
-            edge_eval(edge, depth);
+            edge_eval(edge, seq);
             sum += edge->cand_lst->len * edge->score;
         }
     }
@@ -31,7 +30,7 @@ void node_eval(node_t *node, int depth){
     node->score = 1 + sum / node->cand_lst->len;
 }
 
-void edge_eval(edge_t *edge, int depth){
+void edge_eval(edge_t *edge, int seq){
 
     if(edge->judge == J3_0){
         edge->evaluated = 1;
@@ -45,12 +44,12 @@ void edge_eval(edge_t *edge, int depth){
     }else if(edge->head == NULL){
         edge->evaluated = 1;
         edge->score = DBL_MAX;
-    }else if(depth == 0){
+    }else if(seq == 0){
         edge->score = edge->cand_lst->len;
     }else{
 
         for(node_t *node=edge->head; node!=NULL; node=node->next){
-            node_eval(node, depth-1);
+            node_eval(node, seq-1);
         }
 
         node_sort(edge);
@@ -114,8 +113,6 @@ void node_sort(edge_t *edge){
 
 int isbetter(node_t *ptr_x, node_t *ptr_y, int cmprule){
 
-    // check();
-    
     int flag;
     // score
     if      (ptr_x->score < ptr_y->score){

@@ -5,8 +5,8 @@
 #define SYMBOL
 
 #define TIMES    1  // 質問回数 < HIST
-#define DEPTH    2  // 探索深さ < HIST
-#define USENUM  10 // 使用する数字の数
+#define SEQ      3  // 探索深さ < HIST
+#define USENUM   8  // 使用する数字の数
 #define DI       3  // 桁数
 #define SIZE (USENUM*(USENUM-1)*(USENUM-2))  // 初期の候補数 nPr(USENUM, DI)
 #define HIST    10  // 質問記録数

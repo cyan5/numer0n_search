@@ -6,8 +6,8 @@
 
 #include "symbol.h"
 
-void node_eval(node_t *ptr, int depth);
-void edge_eval(edge_t *ptr, int depth);
+void node_eval(node_t *ptr, int seq);
+void edge_eval(edge_t *ptr, int seq);
 /**
  * 再帰呼び出しによってノードに評価値をつける関数
  * 

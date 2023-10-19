@@ -397,10 +397,10 @@ int hash_search(hash_t *ptr, int data[HIST], int depth){
     /* 
      * tmpがNULLまで走査したらscore = 1
      * 途中で値が見つかったらscore = 0 を代入してbreakする。
-     * */
+    */
 
     hash_t *tmp = ptr;   /* 走査するためのポインタ変数    */
-    int score;         /* return score                  */
+    int score;         /* return score                 */
     int flag;          /* 2重ループを抜けるためのフラグ */
     while(1){
 

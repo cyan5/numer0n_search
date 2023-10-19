@@ -10,7 +10,7 @@
 #include "print.h"
 #include "eval.h"
 #include "cand.h"
-// #include "search.h"
+#include "search.h"
 
 extern int CAND_T[SIZE*DI];
 
@@ -33,9 +33,10 @@ int main(void){
     setCAND_T();
 
     // スタックorキューを生成
-    stack_t *stack_search_now = stack_init();
-    stack_t *stack_search_next;
-    stack_t *stack_eval = stack_init();
+    // stack_t *stack_search_now = stack_init();
+    // stack_t *stack_search_next;
+    // stack_t *stack_eval = stack_init();
+    queue_t *queue = queue_init();
 
     // ルートノードを生成
     int call[DI];
@@ -53,13 +54,15 @@ int main(void){
     node_t *root = node_create(0, call, call_hist, NU, list);
 
     // ルートをスタックorキューにプッシュ
-    stack_push(stack_search_now, root);
+    // stack_push(stack_search_now, root);
 
     // 探索
-    node_t *node_ptr; 
-    node_t *node_new;
+    // node_t *node_ptr; 
+    // node_t *node_new;
     // edge_t *edge_ptr;
     // 質問回数
+
+    /*
     for(int i=0; i<TIMES; i++){
 
         // 探索木を作る
@@ -103,16 +106,16 @@ int main(void){
             // breakpoint();
             stack_print(stack_search_now);
 
-            // ジャッジポインタを作成
+            // エッジポインタを作成
             for(edge_t *edge_ptr=node_ptr->head; edge_ptr!=NULL; edge_ptr=edge_ptr->next){
 
-                // ジャッジポインタの候補の長さだけループ
+                // エッジポインタの候補の長さだけループ
                 for(unit=node_ptr->call_lst->head; unit!=NULL; unit=unit->next){
 
                     // ノードを作らない条件をここに書き込む
                     if(edge_ptr->cand_lst->len <= 2){
                         // check();
-                    }else if(node_ptr->depth >= i+DEPTH){
+                    }else if(node_ptr->depth >= i+SEQ){
                         // check();
                     }else{  // ノードを作成
 
@@ -152,7 +155,7 @@ int main(void){
         // 探索木に評価値をつける
         while(stack_eval->head != NULL){
             node_ptr = stack_pop(stack_eval);
-            node_eval(node_ptr, DEPTH);
+            node_eval(node_ptr, SEQ);
         }
 
 
@@ -173,22 +176,34 @@ int main(void){
         stack_search_now = stack_search_next;
     }
 
+     */
+
+    for(int i=0; i<TIMES; i++){
+
+        fetch_tree(queue, root, i);
+        create_tree(queue, i, SEQ);
+
+        fetch_tree(queue, root, i);
+        eval_tree(queue, SEQ);
+    }
+    
+
     // 時間計測
     double clock_2 = clock();
 
     // 探索木の出力
     printf("\n");
-    tree_print(root);
+    // tree_print(root);
     tree_fprint(fp, root);
 
     printf("\nProcessing time = %.4lf sec.\n", (clock_2-clock_1)/(1000*1000));
 
-    stack_print(stack_search_now);
+    // stack_print(stack_search_now);
     printf("\n");
 
     // 探索木のメモリ解放
-    stack_clear(stack_search_now);
-    stack_clear(stack_eval);
+    // stack_clear(stack_search_now);
+    // stack_clear(stack_eval);
     node_clear(root);
 
     // ファイル処理
